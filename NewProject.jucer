@@ -5,6 +5,20 @@
               jucerVersion="3.1.0">
   <MAINGROUP id="K1gbOS" name="ICubeXMidi">
     <GROUP id="{C7D46B97-0931-1E09-720E-F0748E955B92}" name="Source">
+      <GROUP id="{557C2C96-D36A-1742-AF37-29A13F1E5E72}" name="ICubeXInterface">
+        <FILE id="G1XLwL" name="ICubeXDigitizerState.cpp" compile="1" resource="0"
+              file="Source/ICubeXInterface/ICubeXDigitizerState.cpp"/>
+        <FILE id="koQqfk" name="ICubeXDigitizerState.h" compile="0" resource="0"
+              file="Source/ICubeXInterface/ICubeXDigitizerState.h"/>
+        <FILE id="WL7TQS" name="ICubeXInteface.cpp" compile="1" resource="0"
+              file="Source/ICubeXInterface/ICubeXInteface.cpp"/>
+        <FILE id="N4YsTL" name="ICubeXInteface.h" compile="0" resource="0"
+              file="Source/ICubeXInterface/ICubeXInteface.h"/>
+        <FILE id="JwPRqa" name="ICubeXSysExTranslator.cpp" compile="1" resource="0"
+              file="Source/ICubeXInterface/ICubeXSysExTranslator.cpp"/>
+        <FILE id="O0nVeT" name="ICubeXSysExTranslator.h" compile="0" resource="0"
+              file="Source/ICubeXInterface/ICubeXSysExTranslator.h"/>
+      </GROUP>
       <FILE id="q8wsAI" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="I516ue" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
