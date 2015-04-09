@@ -45,6 +45,9 @@ MainWindow::MainWindow ()
 
 
     //[UserPreSize]
+    myMapper = new mapper::Device("ICubeX");
+    myMapper->add_output("/testOutput", 1, 'f', 0, 0, 0);
+    myMapper->poll();
     //[/UserPreSize]
 
     setSize (600, 400);
