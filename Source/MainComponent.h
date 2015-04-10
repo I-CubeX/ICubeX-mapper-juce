@@ -17,8 +17,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCE_HEADER_1A7C0314FA0C68BA__
-#define __JUCE_HEADER_1A7C0314FA0C68BA__
+#ifndef __JUCE_HEADER_8B807C0970EF2CF1__
+#define __JUCE_HEADER_8B807C0970EF2CF1__
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
@@ -36,7 +36,8 @@
                                                                     //[/Comments]
 */
 class MainWindow  : public Component,
-                    public ComboBoxListener
+                    public ComboBoxListener,
+                    public ButtonListener
 {
 public:
     //==============================================================================
@@ -45,6 +46,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void RefreshPorts();
     void AddMidiIn(const String& name);
     void AddMidiOut(const String& name);
     //[/UserMethods]
@@ -52,17 +54,21 @@ public:
     void paint (Graphics& g);
     void resized();
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged);
+    void buttonClicked (Button* buttonThatWasClicked);
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    ScopedPointer<MapperInterface> myMapperInterface;
+    ScopedPointer<MidiInput> myMidiIn;
+    ScopedPointer<MidiOutput> myMidiOut;
     //[/UserVariables]
 
     //==============================================================================
     ScopedPointer<ComboBox> comboBoxMidiIn;
     ScopedPointer<ComboBox> comboBoxMidiOut;
-    ScopedPointer<MapperInterface> myMapperInterface;
+    ScopedPointer<TextButton> textButtonRefreshPorts;
 
 
     //==============================================================================
@@ -72,4 +78,4 @@ private:
 //[EndFile] You can add extra defines here...
 //[/EndFile]
 
-#endif   // __JUCE_HEADER_1A7C0314FA0C68BA__
+#endif   // __JUCE_HEADER_8B807C0970EF2CF1__

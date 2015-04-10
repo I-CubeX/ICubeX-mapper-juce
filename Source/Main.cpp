@@ -12,6 +12,8 @@
 #include "MainComponent.h"
 
 
+//note2self: this is the container for the actual displayed window;
+// contains the "MainWindow" class from MainComponent (oops, bad naming...)
 class ICubeXMidiWindow : public DocumentWindow
 {
 public:
@@ -58,13 +60,6 @@ public:
     {
         // Add your application's initialisation code here..
         myMainWindow = new ICubeXMidiWindow();
-        for (int i=0; i<MidiInput::getDevices().size(); i++) {
-            myMainWindow->myMainComponent->AddMidiIn(MidiInput::getDevices()[i]);
-        }
-        for (int i=0; i<MidiOutput::getDevices().size(); i++) {
-            myMainWindow->myMainComponent->AddMidiOut(MidiOutput::getDevices()[i]);
-        }
-        
     }
 
     void shutdown() override
