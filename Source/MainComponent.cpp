@@ -121,6 +121,8 @@ void MainWindow::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == comboBoxMidiIn)
     {
         //[UserComboBoxCode_comboBoxMidiIn] -- add your combo box handling code here..
+        int idx = comboBoxMidiIn->getSelectedItemIndex();
+        myMidiIn = MidiInput::openDevice(idx, NULL);
         //[/UserComboBoxCode_comboBoxMidiIn]
     }
     else if (comboBoxThatHasChanged == comboBoxMidiOut)
