@@ -23,6 +23,7 @@
 #include "MainComponent.h"
 
 
+
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 //[/MiscUserDefs]
 
@@ -45,9 +46,10 @@ MainWindow::MainWindow ()
 
 
     //[UserPreSize]
-    myMapper = new mapper::Device("ICubeX");
-    myMapper->add_output("/testOutput", 1, 'f', 0, 0, 0);
-    myMapper->poll();
+    myMapperInterface = new MapperInterface();
+    DBG("starting mapper thread...\n");
+    myMapperInterface->startThread();
+    DBG("... started!\n");
     //[/UserPreSize]
 
     setSize (600, 400);
@@ -67,6 +69,12 @@ MainWindow::~MainWindow()
 
 
     //[Destructor]. You can add your own custom destruction code here..
+    if (myMapperInterface != NULL)
+    {
+        DBG("quit called from main window\n");
+        myMapperInterface->stopThread(2000);
+        DBG("mapperInterface thread stopped\n");
+    }
     //[/Destructor]
 }
 

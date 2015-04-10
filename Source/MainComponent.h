@@ -22,7 +22,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
-#include "mapper/mapper_cpp.h"
+#include "MapperInterface.h"
 //[/Headers]
 
 
@@ -57,12 +57,12 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    mapper::Device* myMapper;
     //[/UserVariables]
 
     //==============================================================================
     ScopedPointer<ComboBox> comboBoxMidiIn;
     ScopedPointer<ComboBox> comboBoxMidiOut;
+    ScopedPointer<MapperInterface> myMapperInterface;
 
 
     //==============================================================================

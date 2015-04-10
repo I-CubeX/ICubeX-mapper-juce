@@ -19,10 +19,14 @@
         <FILE id="O0nVeT" name="ICubeXSysExTranslator.h" compile="0" resource="0"
               file="Source/ICubeXInterface/ICubeXSysExTranslator.h"/>
       </GROUP>
+      <FILE id="lo3GGh" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="q8wsAI" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="I516ue" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-      <FILE id="lo3GGh" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="JJyQ0w" name="MapperInterface.cpp" compile="1" resource="0"
+            file="Source/ICubeXInterface/MapperInterface.cpp"/>
+      <FILE id="nVjODb" name="MapperInterface.h" compile="0" resource="0"
+            file="Source/ICubeXInterface/MapperInterface.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
