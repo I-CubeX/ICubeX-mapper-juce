@@ -37,7 +37,8 @@
 */
 class MainWindow  : public Component,
                     public ComboBoxListener,
-                    public ButtonListener
+                    public ButtonListener,
+                    private MidiInputCallback
 {
 public:
     //==============================================================================
@@ -49,6 +50,15 @@ public:
     void RefreshPorts();
     void AddMidiIn(const String& name);
     void AddMidiOut(const String& name);
+    void handleIncomingMidiMessage (MidiInput* source,
+                                         const MidiMessage& message);
+    void handlePartialSysexMessage(MidiInput* source,
+                                   const uint8* messageData,
+                                   int numBytesSoFar,
+                                   double timestamp);
+    
+    static AudioDeviceManager& getSharedAudioDeviceManager();
+    void SelectMidiIn(int idx);
     //[/UserMethods]
 
     void paint (Graphics& g);
@@ -63,6 +73,7 @@ private:
     ScopedPointer<MapperInterface> myMapperInterface;
     ScopedPointer<MidiInput> myMidiIn;
     ScopedPointer<MidiOutput> myMidiOut;
+    ScopedPointer<AudioDeviceManager> myDeviceManager;
     //[/UserVariables]
 
     //==============================================================================

@@ -49,6 +49,9 @@ MainWindow::MainWindow ()
     textButtonRefreshPorts->setTooltip (TRANS("refresh MIDI ports"));
     textButtonRefreshPorts->setButtonText (TRANS("Refresh Ports"));
     textButtonRefreshPorts->addListener (this);
+    
+    myDeviceManager = new AudioDeviceManager();
+    myDeviceManager->initialise(2, 2, 0, true, String::empty, 0);
 
 
     //[UserPreSize]
@@ -80,7 +83,6 @@ MainWindow::~MainWindow()
     comboBoxMidiOut = nullptr;
     textButtonRefreshPorts = nullptr;
 
-
     //[Destructor]. You can add your own custom destruction code here..
     if (myMapperInterface != NULL)
     {
@@ -89,6 +91,8 @@ MainWindow::~MainWindow()
         DBG("mapperInterface thread stopped\n");
         //delete myMapperInterface;
     }
+    
+    myDeviceManager = nullptr;
     //[/Destructor]
 }
 
@@ -121,8 +125,9 @@ void MainWindow::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == comboBoxMidiIn)
     {
         //[UserComboBoxCode_comboBoxMidiIn] -- add your combo box handling code here..
+        
         int idx = comboBoxMidiIn->getSelectedItemIndex();
-        myMidiIn = MidiInput::openDevice(idx, NULL);
+        SelectMidiIn(idx);
         //[/UserComboBoxCode_comboBoxMidiIn]
     }
     else if (comboBoxThatHasChanged == comboBoxMidiOut)
@@ -177,7 +182,28 @@ void MainWindow::AddMidiIn(const juce::String &name)
 void MainWindow::AddMidiOut(const juce::String &name)
 {
     comboBoxMidiOut->addItem(name, comboBoxMidiOut->getNumItems()+1);
+}
 
+void MainWindow::SelectMidiIn(int idx)
+{
+    const StringArray list(MidiInput::getDevices());
+    const String newInput(list[idx]);
+    
+    if (! myDeviceManager->isMidiInputEnabled(newInput))
+        myDeviceManager->setMidiInputEnabled(newInput, true);
+    myDeviceManager->addMidiInputCallback(newInput, this);
+    DBG("added midi input callback to " + newInput + "\n");
+}
+
+void MainWindow::handleIncomingMidiMessage (MidiInput* source,
+                                                 const MidiMessage& message)
+{
+    
+}
+
+void MainWindow::handlePartialSysexMessage(MidiInput* input, const uint8 *msg, int numBytesSoFar, double timestamp)
+{
+    //send it off to the I-CubeX parser here!!
 }
 //[/MiscUserCode]
 
