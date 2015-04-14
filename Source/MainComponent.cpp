@@ -133,6 +133,8 @@ void MainWindow::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     else if (comboBoxThatHasChanged == comboBoxMidiOut)
     {
         //[UserComboBoxCode_comboBoxMidiOut] -- add your combo box handling code here..
+        int idx = comboBoxMidiOut->getSelectedItemIndex();
+        SelectMidiOut(idx);
         //[/UserComboBoxCode_comboBoxMidiOut]
     }
 
@@ -164,6 +166,8 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
 
 void MainWindow::RefreshPorts()
 {
+    comboBoxMidiIn->clear();
+    comboBoxMidiOut->clear();
     for (int i=0; i<MidiInput::getDevices().size(); i++)
     {
         AddMidiIn(MidiInput::getDevices()[i]);
@@ -195,6 +199,15 @@ void MainWindow::SelectMidiIn(int idx)
     DBG("added midi input callback to " + newInput + "\n");
 }
 
+void MainWindow::SelectMidiOut(int idx)
+{
+    const StringArray list(MidiInput::getDevices());
+    const String newOutput(list[idx]);
+    myDeviceManager->setDefaultMidiOutput(newOutput);
+    
+    DBG("selected midi out " + newOutput);
+}
+
 void MainWindow::handleIncomingMidiMessage (MidiInput* source,
                                                  const MidiMessage& message)
 {
@@ -204,6 +217,11 @@ void MainWindow::handleIncomingMidiMessage (MidiInput* source,
 void MainWindow::handlePartialSysexMessage(MidiInput* input, const uint8 *msg, int numBytesSoFar, double timestamp)
 {
     //send it off to the I-CubeX parser here!!
+}
+
+void MainWindow::sendSysExCmd()
+{
+    
 }
 //[/MiscUserCode]
 

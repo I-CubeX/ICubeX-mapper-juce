@@ -23,6 +23,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "JuceHeader.h"
 #include "MapperInterface.h"
+#include "ICubeXInteface.h"
 //[/Headers]
 
 
@@ -38,7 +39,8 @@
 class MainWindow  : public Component,
                     public ComboBoxListener,
                     public ButtonListener,
-                    private MidiInputCallback
+                    private MidiInputCallback,
+                    public ICubeXInterface
 {
 public:
     //==============================================================================
@@ -59,6 +61,8 @@ public:
     
     static AudioDeviceManager& getSharedAudioDeviceManager();
     void SelectMidiIn(int idx);
+    void SelectMidiOut(int idx);
+    void sendSysExCmd() override;
     //[/UserMethods]
 
     void paint (Graphics& g);
@@ -74,6 +78,7 @@ private:
     ScopedPointer<MidiInput> myMidiIn;
     ScopedPointer<MidiOutput> myMidiOut;
     ScopedPointer<AudioDeviceManager> myDeviceManager;
+    ScopedPointer<ICubeXInterface> myICubeX;
     //[/UserVariables]
 
     //==============================================================================

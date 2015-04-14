@@ -4,6 +4,7 @@
     MapperInterface.h
     Created: 10 Apr 2015 12:22:55pm
     Author:  johnty
+ TODO: rename to MapperInterfaceThread
 
   ==============================================================================
 */
