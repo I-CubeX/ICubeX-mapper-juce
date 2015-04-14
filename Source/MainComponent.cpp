@@ -49,22 +49,27 @@ MainWindow::MainWindow ()
     textButtonRefreshPorts->setTooltip (TRANS("refresh MIDI ports"));
     textButtonRefreshPorts->setButtonText (TRANS("Refresh Ports"));
     textButtonRefreshPorts->addListener (this);
-    
-    myDeviceManager = new AudioDeviceManager();
-    myDeviceManager->initialise(2, 2, 0, true, String::empty, 0);
+
+    addAndMakeVisible (textButtonTest = new TextButton ("new button"));
+    textButtonTest->setButtonText (TRANS("test"));
+    textButtonTest->addListener (this);
 
 
     //[UserPreSize]
     
+    //init device manager
+    myDeviceManager = new AudioDeviceManager();
+    myDeviceManager->initialise(2, 2, 0, true, String::empty, 0);
+
     //start mapper interface
     myMapperInterface = new MapperInterface();
     DBG("starting mapper thread...\n");
     myMapperInterface->startThread();
     DBG("... started!\n");
-    
+
     //other init stuff here
     RefreshPorts();
-    
+
     //[/UserPreSize]
 
     setSize (600, 400);
@@ -82,6 +87,8 @@ MainWindow::~MainWindow()
     comboBoxMidiIn = nullptr;
     comboBoxMidiOut = nullptr;
     textButtonRefreshPorts = nullptr;
+    textButtonTest = nullptr;
+
 
     //[Destructor]. You can add your own custom destruction code here..
     if (myMapperInterface != NULL)
@@ -91,8 +98,9 @@ MainWindow::~MainWindow()
         DBG("mapperInterface thread stopped\n");
         //delete myMapperInterface;
     }
-    
+
     myDeviceManager = nullptr;
+    myMidiOut = nullptr;
     //[/Destructor]
 }
 
@@ -113,6 +121,7 @@ void MainWindow::resized()
     comboBoxMidiIn->setBounds (8, 8, 150, 24);
     comboBoxMidiOut->setBounds (8, 40, 150, 24);
     textButtonRefreshPorts->setBounds (168, 24, 95, 24);
+    textButtonTest->setBounds (192, 200, 64, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -125,7 +134,7 @@ void MainWindow::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == comboBoxMidiIn)
     {
         //[UserComboBoxCode_comboBoxMidiIn] -- add your combo box handling code here..
-        
+
         int idx = comboBoxMidiIn->getSelectedItemIndex();
         SelectMidiIn(idx);
         //[/UserComboBoxCode_comboBoxMidiIn]
@@ -150,10 +159,16 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == textButtonRefreshPorts)
     {
         //[UserButtonCode_textButtonRefreshPorts] -- add your button handler code here..
-        
+
         RefreshPorts();
-        
+
         //[/UserButtonCode_textButtonRefreshPorts]
+    }
+    else if (buttonThatWasClicked == textButtonTest)
+    {
+        //[UserButtonCode_textButtonTest] -- add your button handler code here..
+        SendReset();
+        //[/UserButtonCode_textButtonTest]
     }
 
     //[UserbuttonClicked_Post]
@@ -192,26 +207,29 @@ void MainWindow::SelectMidiIn(int idx)
 {
     const StringArray list(MidiInput::getDevices());
     const String newInput(list[idx]);
-    
+
     if (! myDeviceManager->isMidiInputEnabled(newInput))
         myDeviceManager->setMidiInputEnabled(newInput, true);
-    myDeviceManager->addMidiInputCallback(newInput, this);
+    //myDeviceManager->addMidiInputCallback(newInput, this);
     DBG("added midi input callback to " + newInput + "\n");
 }
 
 void MainWindow::SelectMidiOut(int idx)
 {
-    const StringArray list(MidiInput::getDevices());
+    const StringArray list(MidiOutput::getDevices());
     const String newOutput(list[idx]);
-    myDeviceManager->setDefaultMidiOutput(newOutput);
-    
+    myMidiOut->openDevice(idx);
+    MidiMessage msg(0xff);
+    if (myMidiOut != nullptr)
+        myMidiOut->sendMessageNow(msg);
+
     DBG("selected midi out " + newOutput);
 }
 
 void MainWindow::handleIncomingMidiMessage (MidiInput* source,
                                                  const MidiMessage& message)
 {
-    
+
 }
 
 void MainWindow::handlePartialSysexMessage(MidiInput* input, const uint8 *msg, int numBytesSoFar, double timestamp)
@@ -221,7 +239,15 @@ void MainWindow::handlePartialSysexMessage(MidiInput* input, const uint8 *msg, i
 
 void MainWindow::sendSysExCmd()
 {
-    
+    std::vector<unsigned char> sendBuff = getSysExBuffer();
+    unsigned char* ptrData = new unsigned char[sendBuff.size()];
+    for (int i=0; i<sendBuff.size(); i++) {
+        ptrData[i] = sendBuff.at(i);
+    }
+    DBG("size of data =" + String((int)sendBuff.size()));
+    MidiMessage msg(ptrData, sendBuff.size()); //living dangerously
+    if (myMidiOut != nullptr)
+        myMidiOut->sendMessageNow(msg);
 }
 //[/MiscUserCode]
 
@@ -236,9 +262,9 @@ void MainWindow::sendSysExCmd()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainWindow" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
+                 parentClasses="public Component, public ICubeXInterface" constructorParams=""
+                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="ffffffff"/>
   <COMBOBOX name="midi in box" id="6d56b5526b211a0b" memberName="comboBoxMidiIn"
             virtualName="" explicitFocusOrder="0" pos="8 8 150 24" tooltip="list of MIDI inputs"
@@ -252,6 +278,9 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="168 24 95 24" tooltip="refresh MIDI ports"
               buttonText="Refresh Ports" connectedEdges="0" needsCallback="1"
               radioGroupId="0"/>
+  <TEXTBUTTON name="new button" id="5dfe519aef3ddc73" memberName="textButtonTest"
+              virtualName="" explicitFocusOrder="0" pos="192 200 64 24" buttonText="test"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

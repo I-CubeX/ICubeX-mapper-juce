@@ -37,10 +37,9 @@
                                                                     //[/Comments]
 */
 class MainWindow  : public Component,
+                    public ICubeXInterface,
                     public ComboBoxListener,
-                    public ButtonListener,
-                    private MidiInputCallback,
-                    public ICubeXInterface
+                    public ButtonListener
 {
 public:
     //==============================================================================
@@ -58,7 +57,7 @@ public:
                                    const uint8* messageData,
                                    int numBytesSoFar,
                                    double timestamp);
-    
+
     static AudioDeviceManager& getSharedAudioDeviceManager();
     void SelectMidiIn(int idx);
     void SelectMidiOut(int idx);
@@ -78,13 +77,13 @@ private:
     ScopedPointer<MidiInput> myMidiIn;
     ScopedPointer<MidiOutput> myMidiOut;
     ScopedPointer<AudioDeviceManager> myDeviceManager;
-    ScopedPointer<ICubeXInterface> myICubeX;
     //[/UserVariables]
 
     //==============================================================================
     ScopedPointer<ComboBox> comboBoxMidiIn;
     ScopedPointer<ComboBox> comboBoxMidiOut;
     ScopedPointer<TextButton> textButtonRefreshPorts;
+    ScopedPointer<TextButton> textButtonTest;
 
 
     //==============================================================================
