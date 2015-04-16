@@ -38,6 +38,7 @@
 */
 class MainWindow  : public Component,
                     public ICubeXInterface,
+                    public MidiInputCallback,
                     public ComboBoxListener,
                     public ButtonListener
 {

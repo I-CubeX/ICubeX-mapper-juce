@@ -56,7 +56,7 @@ MainWindow::MainWindow ()
 
 
     //[UserPreSize]
-    
+
     //init device manager
     myDeviceManager = new AudioDeviceManager();
     myDeviceManager->initialise(2, 2, 0, true, String::empty, 0);
@@ -208,9 +208,12 @@ void MainWindow::SelectMidiIn(int idx)
     const StringArray list(MidiInput::getDevices());
     const String newInput(list[idx]);
 
-    if (! myDeviceManager->isMidiInputEnabled(newInput))
+    if (! myDeviceManager->isMidiInputEnabled(newInput)) {
         myDeviceManager->setMidiInputEnabled(newInput, true);
-    //myDeviceManager->addMidiInputCallback(newInput, this);
+        myDeviceManager->addMidiInputCallback(newInput, this);
+
+    }
+
     DBG("added midi input callback to " + newInput + "\n");
 }
 
@@ -218,9 +221,9 @@ void MainWindow::SelectMidiOut(int idx)
 {
     const StringArray list(MidiOutput::getDevices());
     const String newOutput(list[idx]);
-    
+
     myDeviceManager->setDefaultMidiOutput(newOutput);
-    
+
 //    myDeviceManager->getDefaultMidiOutput();
 //    MidiMessage msg(0xff);
 //    if (myMidiOut != nullptr)
@@ -229,15 +232,19 @@ void MainWindow::SelectMidiOut(int idx)
     DBG("selected midi out " + newOutput);
 }
 
-void MainWindow::handleIncomingMidiMessage (MidiInput* source,
-                                                 const MidiMessage& message)
+void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message)
 {
-
+    if (message.isSysEx()) {
+        DBG("midi sysex received: \n");
+    }
+    DBG("midi msg received: \n");
+    
 }
 
 void MainWindow::handlePartialSysexMessage(MidiInput* input, const uint8 *msg, int numBytesSoFar, double timestamp)
 {
     //send it off to the I-CubeX parser here!!
+    DBG("sysex msg received\n");
 }
 
 void MainWindow::sendSysExCmd()
@@ -265,9 +272,10 @@ void MainWindow::sendSysExCmd()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainWindow" componentName=""
-                 parentClasses="public Component, public ICubeXInterface" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
+                 parentClasses="public Component, public ICubeXInterface, public MidiInputCallback"
+                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="600"
+                 initialHeight="400">
   <BACKGROUND backgroundColour="ffffffff"/>
   <COMBOBOX name="midi in box" id="6d56b5526b211a0b" memberName="comboBoxMidiIn"
             virtualName="" explicitFocusOrder="0" pos="8 8 150 24" tooltip="list of MIDI inputs"
