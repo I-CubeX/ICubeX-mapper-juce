@@ -98,9 +98,8 @@ MainWindow::~MainWindow()
         DBG("mapperInterface thread stopped\n");
         //delete myMapperInterface;
     }
-
-    myDeviceManager = nullptr;
     myMidiOut = nullptr;
+    myDeviceManager = nullptr;
     //[/Destructor]
 }
 
@@ -168,6 +167,7 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
     {
         //[UserButtonCode_textButtonTest] -- add your button handler code here..
         SendReset();
+        SendStream(true, 0);
         //[/UserButtonCode_textButtonTest]
     }
 
@@ -218,10 +218,13 @@ void MainWindow::SelectMidiOut(int idx)
 {
     const StringArray list(MidiOutput::getDevices());
     const String newOutput(list[idx]);
-    myMidiOut->openDevice(idx);
-    MidiMessage msg(0xff);
-    if (myMidiOut != nullptr)
-        myMidiOut->sendMessageNow(msg);
+    
+    myDeviceManager->setDefaultMidiOutput(newOutput);
+    
+//    myDeviceManager->getDefaultMidiOutput();
+//    MidiMessage msg(0xff);
+//    if (myMidiOut != nullptr)
+//        myMidiOut->sendMessageNow(msg);
 
     DBG("selected midi out " + newOutput);
 }
@@ -246,8 +249,8 @@ void MainWindow::sendSysExCmd()
     }
     DBG("size of data =" + String((int)sendBuff.size()));
     MidiMessage msg(ptrData, sendBuff.size()); //living dangerously
-    if (myMidiOut != nullptr)
-        myMidiOut->sendMessageNow(msg);
+    if (myDeviceManager->getDefaultMidiOutput() != nullptr)
+        myDeviceManager->getDefaultMidiOutput()->sendMessageNow(msg);
 }
 //[/MiscUserCode]
 
