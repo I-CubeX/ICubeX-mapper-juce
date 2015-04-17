@@ -85,6 +85,16 @@ private:
     ScopedPointer<ComboBox> comboBoxMidiOut;
     ScopedPointer<TextButton> textButtonRefreshPorts;
     ScopedPointer<TextButton> textButtonTest;
+    ScopedPointer<ToggleButton> toggleButtonSensors;
+    ScopedPointer<TextButton> textButtonAutoConnect;
+    ScopedPointer<Label> labelSensor1;
+    ScopedPointer<Label> labelSensor2;
+    ScopedPointer<Label> labelSensor3;
+    ScopedPointer<Label> labelSensor4;
+    ScopedPointer<Label> labelSensor5;
+    ScopedPointer<Label> labelSensor6;
+    ScopedPointer<Label> labelSensor7;
+    ScopedPointer<Label> labelSensor8;
 
 
     //==============================================================================

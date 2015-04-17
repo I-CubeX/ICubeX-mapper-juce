@@ -54,6 +54,80 @@ MainWindow::MainWindow ()
     textButtonTest->setButtonText (TRANS("test"));
     textButtonTest->addListener (this);
 
+    addAndMakeVisible (toggleButtonSensors = new ToggleButton ("sensors toggle button"));
+    toggleButtonSensors->setTooltip (TRANS("toggle sensors here"));
+    toggleButtonSensors->setButtonText (TRANS("sensors active"));
+    toggleButtonSensors->addListener (this);
+
+    addAndMakeVisible (textButtonAutoConnect = new TextButton ("auto connect button"));
+    textButtonAutoConnect->setTooltip (TRANS("automatically try connect to ICubeX port"));
+    textButtonAutoConnect->setButtonText (TRANS("Auto Connect"));
+    textButtonAutoConnect->addListener (this);
+
+    addAndMakeVisible (labelSensor1 = new Label ("new label",
+                                                 TRANS("sensor")));
+    labelSensor1->setFont (Font (15.00f, Font::plain));
+    labelSensor1->setJustificationType (Justification::centredLeft);
+    labelSensor1->setEditable (false, false, false);
+    labelSensor1->setColour (TextEditor::textColourId, Colours::black);
+    labelSensor1->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (labelSensor2 = new Label ("new label",
+                                                 TRANS("sensor")));
+    labelSensor2->setFont (Font (15.00f, Font::plain));
+    labelSensor2->setJustificationType (Justification::centredLeft);
+    labelSensor2->setEditable (false, false, false);
+    labelSensor2->setColour (TextEditor::textColourId, Colours::black);
+    labelSensor2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (labelSensor3 = new Label ("new label",
+                                                 TRANS("sensor")));
+    labelSensor3->setFont (Font (15.00f, Font::plain));
+    labelSensor3->setJustificationType (Justification::centredLeft);
+    labelSensor3->setEditable (false, false, false);
+    labelSensor3->setColour (TextEditor::textColourId, Colours::black);
+    labelSensor3->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (labelSensor4 = new Label ("new label",
+                                                 TRANS("sensor")));
+    labelSensor4->setFont (Font (15.00f, Font::plain));
+    labelSensor4->setJustificationType (Justification::centredLeft);
+    labelSensor4->setEditable (false, false, false);
+    labelSensor4->setColour (TextEditor::textColourId, Colours::black);
+    labelSensor4->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (labelSensor5 = new Label ("new label",
+                                                 TRANS("sensor")));
+    labelSensor5->setFont (Font (15.00f, Font::plain));
+    labelSensor5->setJustificationType (Justification::centredLeft);
+    labelSensor5->setEditable (false, false, false);
+    labelSensor5->setColour (TextEditor::textColourId, Colours::black);
+    labelSensor5->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (labelSensor6 = new Label ("new label",
+                                                 TRANS("sensor")));
+    labelSensor6->setFont (Font (15.00f, Font::plain));
+    labelSensor6->setJustificationType (Justification::centredLeft);
+    labelSensor6->setEditable (false, false, false);
+    labelSensor6->setColour (TextEditor::textColourId, Colours::black);
+    labelSensor6->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (labelSensor7 = new Label ("new label",
+                                                 TRANS("sensor")));
+    labelSensor7->setFont (Font (15.00f, Font::plain));
+    labelSensor7->setJustificationType (Justification::centredLeft);
+    labelSensor7->setEditable (false, false, false);
+    labelSensor7->setColour (TextEditor::textColourId, Colours::black);
+    labelSensor7->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (labelSensor8 = new Label ("new label",
+                                                 TRANS("sensor")));
+    labelSensor8->setFont (Font (15.00f, Font::plain));
+    labelSensor8->setJustificationType (Justification::centredLeft);
+    labelSensor8->setEditable (false, false, false);
+    labelSensor8->setColour (TextEditor::textColourId, Colours::black);
+    labelSensor8->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
 
     //[UserPreSize]
 
@@ -88,6 +162,16 @@ MainWindow::~MainWindow()
     comboBoxMidiOut = nullptr;
     textButtonRefreshPorts = nullptr;
     textButtonTest = nullptr;
+    toggleButtonSensors = nullptr;
+    textButtonAutoConnect = nullptr;
+    labelSensor1 = nullptr;
+    labelSensor2 = nullptr;
+    labelSensor3 = nullptr;
+    labelSensor4 = nullptr;
+    labelSensor5 = nullptr;
+    labelSensor6 = nullptr;
+    labelSensor7 = nullptr;
+    labelSensor8 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -119,8 +203,18 @@ void MainWindow::resized()
 {
     comboBoxMidiIn->setBounds (8, 8, 150, 24);
     comboBoxMidiOut->setBounds (8, 40, 150, 24);
-    textButtonRefreshPorts->setBounds (168, 24, 95, 24);
+    textButtonRefreshPorts->setBounds (168, 8, 95, 24);
     textButtonTest->setBounds (192, 200, 64, 24);
+    toggleButtonSensors->setBounds (24, 200, 150, 24);
+    textButtonAutoConnect->setBounds (168, 40, 95, 24);
+    labelSensor1->setBounds (8, 80, 64, 24);
+    labelSensor2->setBounds (72, 80, 64, 24);
+    labelSensor3->setBounds (136, 80, 64, 24);
+    labelSensor4->setBounds (200, 80, 64, 24);
+    labelSensor5->setBounds (8, 104, 64, 24);
+    labelSensor6->setBounds (72, 104, 64, 24);
+    labelSensor7->setBounds (136, 104, 64, 24);
+    labelSensor8->setBounds (200, 104, 64, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -168,6 +262,20 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_textButtonTest] -- add your button handler code here..
         SendStream(true, 0);
         //[/UserButtonCode_textButtonTest]
+    }
+    else if (buttonThatWasClicked == toggleButtonSensors)
+    {
+        //[UserButtonCode_toggleButtonSensors] -- add your button handler code here..
+        for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+        {
+            SendStream(!my_digitizer_state_.GetIsSensorOnState(0), i);
+        }
+        //[/UserButtonCode_toggleButtonSensors]
+    }
+    else if (buttonThatWasClicked == textButtonAutoConnect)
+    {
+        //[UserButtonCode_textButtonAutoConnect] -- add your button handler code here..
+        //[/UserButtonCode_textButtonAutoConnect]
     }
 
     //[UserbuttonClicked_Post]
@@ -244,11 +352,25 @@ void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage
             data.insert(data.end(), message.getSysExData()[i]);
             //DBG(String((unsigned int)(message.getSysExData()[i]))+ " ");
         }
-        //data.insert(data.end(), 0xF7);
+        data.insert(data.end(), 0xF7);
         ParseSysEx(data);
     }
+    //we only have 8 fixed sensors...
+    //but still should probably auto generate GUI elements in the future and do away
+    //with this terrible hardcoding...
+    MessageManagerLock mml;
+    if (mml.lockWasGained()) {
+        labelSensor1->setText(String(my_digitizer_state_.GetSensorValState(0)), dontSendNotification);
+        labelSensor2->setText(String(my_digitizer_state_.GetSensorValState(1)), dontSendNotification);
+        labelSensor3->setText(String(my_digitizer_state_.GetSensorValState(2)), dontSendNotification);
+        labelSensor4->setText(String(my_digitizer_state_.GetSensorValState(3)), dontSendNotification);
+        labelSensor5->setText(String(my_digitizer_state_.GetSensorValState(4)), dontSendNotification);
+        labelSensor6->setText(String(my_digitizer_state_.GetSensorValState(5)), dontSendNotification);
+        labelSensor7->setText(String(my_digitizer_state_.GetSensorValState(6)), dontSendNotification);
+        labelSensor8->setText(String(my_digitizer_state_.GetSensorValState(7)), dontSendNotification);
+    }
     //DBG("\nmidi msg received: \n");
-    
+
 }
 
 void MainWindow::handlePartialSysexMessage(MidiInput* input, const uint8 *msg, int numBytesSoFar, double timestamp)
@@ -296,12 +418,60 @@ BEGIN_JUCER_METADATA
             editable="0" layout="33" items="" textWhenNonSelected="select output"
             textWhenNoItems="(no ports available)"/>
   <TEXTBUTTON name="refresh port btn" id="9393238952627389" memberName="textButtonRefreshPorts"
-              virtualName="" explicitFocusOrder="0" pos="168 24 95 24" tooltip="refresh MIDI ports"
+              virtualName="" explicitFocusOrder="0" pos="168 8 95 24" tooltip="refresh MIDI ports"
               buttonText="Refresh Ports" connectedEdges="0" needsCallback="1"
               radioGroupId="0"/>
   <TEXTBUTTON name="new button" id="5dfe519aef3ddc73" memberName="textButtonTest"
               virtualName="" explicitFocusOrder="0" pos="192 200 64 24" buttonText="test"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <TOGGLEBUTTON name="sensors toggle button" id="3771bf04353d3be1" memberName="toggleButtonSensors"
+                virtualName="" explicitFocusOrder="0" pos="24 200 150 24" tooltip="toggle sensors here"
+                buttonText="sensors active" connectedEdges="0" needsCallback="1"
+                radioGroupId="0" state="0"/>
+  <TEXTBUTTON name="auto connect button" id="b54ab90f08d157a3" memberName="textButtonAutoConnect"
+              virtualName="" explicitFocusOrder="0" pos="168 40 95 24" tooltip="automatically try connect to ICubeX port"
+              buttonText="Auto Connect" connectedEdges="0" needsCallback="1"
+              radioGroupId="0"/>
+  <LABEL name="new label" id="96fa6019cd20e93" memberName="labelSensor1"
+         virtualName="" explicitFocusOrder="0" pos="8 80 64 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="e3902ee2234690f9" memberName="labelSensor2"
+         virtualName="" explicitFocusOrder="0" pos="72 80 64 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="4d2ec8bc35a78fda" memberName="labelSensor3"
+         virtualName="" explicitFocusOrder="0" pos="136 80 64 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="ef80babd10d6f897" memberName="labelSensor4"
+         virtualName="" explicitFocusOrder="0" pos="200 80 64 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="705c5368a7bf0b51" memberName="labelSensor5"
+         virtualName="" explicitFocusOrder="0" pos="8 104 64 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="c3939c3b937756aa" memberName="labelSensor6"
+         virtualName="" explicitFocusOrder="0" pos="72 104 64 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="5af2718dd3fc93d7" memberName="labelSensor7"
+         virtualName="" explicitFocusOrder="0" pos="136 104 64 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="539233305d9aeeb5" memberName="labelSensor8"
+         virtualName="" explicitFocusOrder="0" pos="200 104 64 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
