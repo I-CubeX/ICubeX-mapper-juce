@@ -355,9 +355,19 @@ void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage
         data.insert(data.end(), 0xF7);
         ParseSysEx(data);
     }
+    
+    //this is some needless array/vector data conversion right here
+    std::vector<int> newVec;
+    unsigned arraySize = kNUM_ICUBEX_SENSORS;
+    newVec.insert(newVec.end(), &my_digitizer_state_.GetSensorValsArray()[0], &my_digitizer_state_.GetSensorValsArray()[arraySize]);
+    myMapperInterface->updateVals(newVec);
+
+    
     //we only have 8 fixed sensors...
     //but still should probably auto generate GUI elements in the future and do away
     //with this terrible hardcoding...
+
+    
     MessageManagerLock mml;
     if (mml.lockWasGained()) {
         labelSensor1->setText(String(my_digitizer_state_.GetSensorValState(0)), dontSendNotification);

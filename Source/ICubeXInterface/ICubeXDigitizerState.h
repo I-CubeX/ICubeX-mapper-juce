@@ -87,6 +87,8 @@ public:
     
     bool getDebug() {return is_debug_;}
     
+    int* GetSensorValsArray() {return sensor_values_;}
+    
     
 private:
     int sensor_values_[kNUM_ICUBEX_SENSORS];

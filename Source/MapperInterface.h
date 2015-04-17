@@ -31,7 +31,7 @@ public:
     ~MapperInterface();
     
     void run();
-    void update();
+    void updateVals(std::vector<int> newVals);
     
 //    int (MapperInterface::*pt2Member) (float, char, char) = NULL;
 //    int DoIt(float a, char b, char c) __attribute__ ((cdecl)) { DBG("DoIt"); return a+b+c; }
@@ -49,12 +49,12 @@ public:
 //                                   void *value,
 //                                   int count,
 //                                   mapper::Timetag tt);
-    
     SpinLock threadLock;
     
 private:
     mapper::Device* myMapperOut;
     mapper::Signal* myOutputSigs;
+    std::vector<int> mySigVals;
 
 };
 

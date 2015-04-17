@@ -9,16 +9,16 @@
 */
 
 #include "MapperInterface.h"
+#include "ICubeXInteface.h"
 
 MapperInterface::MapperInterface() : Thread("MapperInterfaceThread")
 {
     myMapperOut = new mapper::Device("ICubeX");
-    float min = 0.0;
-    float max = 1.0;
+    int min[8] = {  0,   0,   0,   0,   0,   0,   0,   0};
+    int max[8] = {127, 127, 127, 127, 127, 127, 127, 127};
     //myMapper->add_output("/testSig1", 1, 'i', "num", 0, 0);
-    myMapperOut->add_output("/testSig", 1, 'f', "Hz", &min, &max);
-    
-    
+    myMapperOut->add_output("/ICubeXSensors", kNUM_ICUBEX_SENSORS, 'i', "raw", &min, &max);
+    mySigVals.reserve(kNUM_ICUBEX_SENSORS);
     
     //myMapperOut->add_input("/testLoopback", 1, 'f', "Hz", &min, &max, inputHandler, 0);
     
@@ -49,9 +49,13 @@ void MapperInterface::run()
             myMapperOut->poll();
             for (mapper::Signal::Iterator it = myMapperOut->outputs().begin(); it != myMapperOut->outputs().end(); ++it) {
                 //DBG("updating " + (*it).full_name());
-                (*it).update(0.0f);
+                //there is only one in this case...]
+                threadLock.enter();
+                (*it).update(mySigVals);
+                threadLock.exit();
+                //(*it).update(0.0f);
             }
-            sleep(1000); //lets not be too hasty here...
+            sleep(50); //lets not be too hasty here...
             
         }
     }
@@ -59,6 +63,13 @@ void MapperInterface::run()
         delete myMapperOut;
     }
     DBG("ending mapper interface thread...\n");
+}
+
+void MapperInterface::updateVals(std::vector<int> newVals)
+{
+    threadLock.enter();
+    mySigVals = newVals;
+    threadLock.exit();
 }
 
 //void MapperInterface::MapperInputHandler(mapper::Signal msig,
