@@ -166,7 +166,6 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == textButtonTest)
     {
         //[UserButtonCode_textButtonTest] -- add your button handler code here..
-        SendReset();
         SendStream(true, 0);
         //[/UserButtonCode_textButtonTest]
     }
@@ -228,16 +227,27 @@ void MainWindow::SelectMidiOut(int idx)
 //    MidiMessage msg(0xff);
 //    if (myMidiOut != nullptr)
 //        myMidiOut->sendMessageNow(msg);
+    SendReset();
 
     DBG("selected midi out " + newOutput);
 }
 
 void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message)
 {
-    if (message.isSysEx()) {
-        DBG("midi sysex received: \n");
+    if (message.isSysEx())
+    {
+        std::vector<unsigned char> data;
+        data.reserve(message.getSysExDataSize()+2);
+        data.insert(data.begin(), 0xF0);
+        for (int i=0; i<message.getSysExDataSize(); i++)
+        {
+            data.insert(data.end(), message.getSysExData()[i]);
+            //DBG(String((unsigned int)(message.getSysExData()[i]))+ " ");
+        }
+        //data.insert(data.end(), 0xF7);
+        ParseSysEx(data);
     }
-    DBG("midi msg received: \n");
+    //DBG("\nmidi msg received: \n");
     
 }
 
