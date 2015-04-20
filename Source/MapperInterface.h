@@ -13,6 +13,7 @@
 #define MAPPERINTERFACE_H_INCLUDED
 
 #include "mapper/mapper_cpp.h"
+#include "SignalPlotterComponent.h"
 #include "JuceHeader.h"
 
 //int DoIt(float a, char b, char c) __attribute__ ((cdecl));
@@ -55,7 +56,6 @@ private:
     mapper::Device* myMapperOut;
     mapper::Signal* myOutputSigs;
     std::vector<int> mySigVals;
-
 };
 
 

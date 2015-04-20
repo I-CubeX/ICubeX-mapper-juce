@@ -27,6 +27,8 @@
             file="Source/MapperInterface.cpp"/>
       <FILE id="B3jrX4" name="MapperInterface.h" compile="0" resource="0"
             file="Source/MapperInterface.h"/>
+      <FILE id="oyNew6" name="SignalPlotterComponent.h" compile="1" resource="0"
+            file="Source/SignalPlotterComponent.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

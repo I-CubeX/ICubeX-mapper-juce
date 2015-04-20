@@ -78,6 +78,7 @@ private:
     ScopedPointer<MidiInput> myMidiIn;
     ScopedPointer<MidiOutput> myMidiOut;
     ScopedPointer<AudioDeviceManager> myDeviceManager;
+    ScopedPointer<SignalPlotterComponent> mySigPlotter;
     //[/UserVariables]
 
     //==============================================================================

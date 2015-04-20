@@ -69,6 +69,7 @@ MainWindow::MainWindow ()
     labelSensor1->setFont (Font (15.00f, Font::plain));
     labelSensor1->setJustificationType (Justification::centredLeft);
     labelSensor1->setEditable (false, false, false);
+    labelSensor1->setColour (Label::textColourId, Colours::blue);
     labelSensor1->setColour (TextEditor::textColourId, Colours::black);
     labelSensor1->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -77,6 +78,7 @@ MainWindow::MainWindow ()
     labelSensor2->setFont (Font (15.00f, Font::plain));
     labelSensor2->setJustificationType (Justification::centredLeft);
     labelSensor2->setEditable (false, false, false);
+    labelSensor2->setColour (Label::textColourId, Colours::green);
     labelSensor2->setColour (TextEditor::textColourId, Colours::black);
     labelSensor2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -85,6 +87,7 @@ MainWindow::MainWindow ()
     labelSensor3->setFont (Font (15.00f, Font::plain));
     labelSensor3->setJustificationType (Justification::centredLeft);
     labelSensor3->setEditable (false, false, false);
+    labelSensor3->setColour (Label::textColourId, Colours::blueviolet);
     labelSensor3->setColour (TextEditor::textColourId, Colours::black);
     labelSensor3->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -93,6 +96,7 @@ MainWindow::MainWindow ()
     labelSensor4->setFont (Font (15.00f, Font::plain));
     labelSensor4->setJustificationType (Justification::centredLeft);
     labelSensor4->setEditable (false, false, false);
+    labelSensor4->setColour (Label::textColourId, Colours::cornflowerblue);
     labelSensor4->setColour (TextEditor::textColourId, Colours::black);
     labelSensor4->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -101,6 +105,7 @@ MainWindow::MainWindow ()
     labelSensor5->setFont (Font (15.00f, Font::plain));
     labelSensor5->setJustificationType (Justification::centredLeft);
     labelSensor5->setEditable (false, false, false);
+    labelSensor5->setColour (Label::textColourId, Colour (0xff2ab483));
     labelSensor5->setColour (TextEditor::textColourId, Colours::black);
     labelSensor5->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -109,6 +114,7 @@ MainWindow::MainWindow ()
     labelSensor6->setFont (Font (15.00f, Font::plain));
     labelSensor6->setJustificationType (Justification::centredLeft);
     labelSensor6->setEditable (false, false, false);
+    labelSensor6->setColour (Label::textColourId, Colours::brown);
     labelSensor6->setColour (TextEditor::textColourId, Colours::black);
     labelSensor6->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -117,6 +123,7 @@ MainWindow::MainWindow ()
     labelSensor7->setFont (Font (15.00f, Font::plain));
     labelSensor7->setJustificationType (Justification::centredLeft);
     labelSensor7->setEditable (false, false, false);
+    labelSensor7->setColour (Label::textColourId, Colour (0xffe81dd5));
     labelSensor7->setColour (TextEditor::textColourId, Colours::black);
     labelSensor7->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -134,6 +141,9 @@ MainWindow::MainWindow ()
     //init device manager
     myDeviceManager = new AudioDeviceManager();
     myDeviceManager->initialise(2, 2, 0, true, String::empty, 0);
+
+    //init SigPlotter
+    mySigPlotter = new SignalPlotterComponent();
 
     //start mapper interface
     myMapperInterface = new MapperInterface();
@@ -196,6 +206,8 @@ void MainWindow::paint (Graphics& g)
     g.fillAll (Colours::white);
 
     //[UserPaint] Add your own custom painting code here..
+    //draw sigPlotter
+    mySigPlotter->drawSignals(g);
     //[/UserPaint]
 }
 
@@ -216,6 +228,7 @@ void MainWindow::resized()
     labelSensor7->setBounds (136, 104, 64, 24);
     labelSensor8->setBounds (200, 104, 64, 24);
     //[UserResized] Add your own custom resize handling here..
+    mySigPlotter->setBounds(getWidth()/2, 5, getWidth()/2-5, getHeight()/2-5);
     //[/UserResized]
 }
 
@@ -355,19 +368,19 @@ void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage
         data.insert(data.end(), 0xF7);
         ParseSysEx(data);
     }
-    
+
     //this is some needless array/vector data conversion right here
     std::vector<int> newVec;
     unsigned arraySize = kNUM_ICUBEX_SENSORS;
     newVec.insert(newVec.end(), &my_digitizer_state_.GetSensorValsArray()[0], &my_digitizer_state_.GetSensorValsArray()[arraySize]);
     myMapperInterface->updateVals(newVec);
 
-    
+
     //we only have 8 fixed sensors...
     //but still should probably auto generate GUI elements in the future and do away
     //with this terrible hardcoding...
 
-    
+
     MessageManagerLock mml;
     if (mml.lockWasGained()) {
         labelSensor1->setText(String(my_digitizer_state_.GetSensorValState(0)), dontSendNotification);
@@ -443,40 +456,40 @@ BEGIN_JUCER_METADATA
               buttonText="Auto Connect" connectedEdges="0" needsCallback="1"
               radioGroupId="0"/>
   <LABEL name="new label" id="96fa6019cd20e93" memberName="labelSensor1"
-         virtualName="" explicitFocusOrder="0" pos="8 80 64 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="8 80 64 24" textCol="ff0000ff"
+         edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="e3902ee2234690f9" memberName="labelSensor2"
-         virtualName="" explicitFocusOrder="0" pos="72 80 64 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="72 80 64 24" textCol="ff008000"
+         edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="4d2ec8bc35a78fda" memberName="labelSensor3"
-         virtualName="" explicitFocusOrder="0" pos="136 80 64 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="136 80 64 24" textCol="ff8a2be2"
+         edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="ef80babd10d6f897" memberName="labelSensor4"
-         virtualName="" explicitFocusOrder="0" pos="200 80 64 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="200 80 64 24" textCol="ff6495ed"
+         edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="705c5368a7bf0b51" memberName="labelSensor5"
-         virtualName="" explicitFocusOrder="0" pos="8 104 64 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="8 104 64 24" textCol="ff2ab483"
+         edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="c3939c3b937756aa" memberName="labelSensor6"
-         virtualName="" explicitFocusOrder="0" pos="72 104 64 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="72 104 64 24" textCol="ffa52a2a"
+         edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="5af2718dd3fc93d7" memberName="labelSensor7"
-         virtualName="" explicitFocusOrder="0" pos="136 104 64 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="136 104 64 24" textCol="ffe81dd5"
+         edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="539233305d9aeeb5" memberName="labelSensor8"
          virtualName="" explicitFocusOrder="0" pos="200 104 64 24" edTextCol="ff000000"
          edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
