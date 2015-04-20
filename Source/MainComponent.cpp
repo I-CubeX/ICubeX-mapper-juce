@@ -150,6 +150,11 @@ MainWindow::MainWindow ()
     DBG("starting mapper thread...\n");
     myMapperInterface->startThread();
     DBG("... started!\n");
+    
+    //colour for plots
+    //NamedValueSet props = labelSensor1->getProperties();
+    //Colour* col = (Colour*)props.getVarPointerAt(Label::textColourId);
+    //mySigPlotter->SetPlotColour(0, *col);
 
     //other init stuff here
     RefreshPorts();
@@ -374,6 +379,7 @@ void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage
     unsigned arraySize = kNUM_ICUBEX_SENSORS;
     newVec.insert(newVec.end(), &my_digitizer_state_.GetSensorValsArray()[0], &my_digitizer_state_.GetSensorValsArray()[arraySize]);
     myMapperInterface->updateVals(newVec);
+    mySigPlotter->updateSigs(my_digitizer_state_.GetSensorValsArray());
 
 
     //we only have 8 fixed sensors...
