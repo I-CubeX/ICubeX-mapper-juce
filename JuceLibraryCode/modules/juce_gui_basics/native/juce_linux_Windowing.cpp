@@ -561,7 +561,7 @@ public:
             }
         }
 
-        if (! usingXShm)
+        if (! isUsingXShm())
        #endif
         {
             imageDataAllocated.allocate (lineStride * h, format == Image::ARGB && clearImage);
@@ -587,15 +587,15 @@ public:
 
             if (imageDepth == 16)
             {
-                const int pixelStride = 2;
-                const int lineStride = ((w * pixelStride + 3) & ~3);
+                const int pixStride = 2;
+                const int stride = ((w * pixStride + 3) & ~3);
 
-                imageData16Bit.malloc (lineStride * h);
+                imageData16Bit.malloc (stride * h);
                 xImage->data = imageData16Bit;
                 xImage->bitmap_pad = 16;
-                xImage->depth = pixelStride * 8;
-                xImage->bytes_per_line = lineStride;
-                xImage->bits_per_pixel = pixelStride * 8;
+                xImage->depth = pixStride * 8;
+                xImage->bytes_per_line = stride;
+                xImage->bits_per_pixel = pixStride * 8;
                 xImage->red_mask   = visual->red_mask;
                 xImage->green_mask = visual->green_mask;
                 xImage->blue_mask  = visual->blue_mask;
@@ -614,7 +614,7 @@ public:
             XFreeGC (display, gc);
 
        #if JUCE_USE_XSHM
-        if (usingXShm)
+        if (isUsingXShm())
         {
             XShmDetach (display, &segmentInfo);
 
@@ -709,12 +709,16 @@ public:
 
         // blit results to screen.
        #if JUCE_USE_XSHM
-        if (usingXShm)
+        if (isUsingXShm())
             XShmPutImage (display, (::Drawable) window, gc, xImage, sx, sy, dx, dy, dw, dh, True);
         else
        #endif
             XPutImage (display, (::Drawable) window, gc, xImage, sx, sy, dx, dy, dw, dh);
     }
+
+    #if JUCE_USE_XSHM
+    bool isUsingXShm() const noexcept       { return usingXShm; }
+    #endif
 
 private:
     //==============================================================================
@@ -1139,11 +1143,11 @@ public:
 
         ::Window root, child;
         int wx, wy;
-        unsigned int ww, wh, bw, depth;
+        unsigned int ww, wh, bw, bitDepth;
 
         ScopedXLock xlock;
 
-        return XGetGeometry (display, (::Drawable) windowH, &root, &wx, &wy, &ww, &wh, &bw, &depth)
+        return XGetGeometry (display, (::Drawable) windowH, &root, &wx, &wy, &ww, &wh, &bw, &bitDepth)
                 && XTranslateCoordinates (display, windowH, windowH, localPos.getX(), localPos.getY(), &wx, &wy, &child)
                 && child == None;
     }
@@ -1926,15 +1930,16 @@ private:
 
                 for (const Rectangle<int>* i = originalRepaintRegion.begin(), * const e = originalRepaintRegion.end(); i != e; ++i)
                 {
+                    XBitmapImage* xbitmap = static_cast<XBitmapImage*> (image.getPixelData());
                    #if JUCE_USE_XSHM
-                    if (XSHMHelpers::isShmAvailable())
+                    if (xbitmap->isUsingXShm())
                         ++shmPaintsPending;
                    #endif
 
-                    static_cast<XBitmapImage*> (image.getPixelData())
-                        ->blitToWindow (peer.windowH,
-                                        i->getX(), i->getY(), i->getWidth(), i->getHeight(),
-                                        i->getX() - totalArea.getX(), i->getY() - totalArea.getY());
+
+                   xbitmap->blitToWindow (peer.windowH,
+                                          i->getX(), i->getY(), i->getWidth(), i->getHeight(),
+                                          i->getX() - totalArea.getX(), i->getY() - totalArea.getY());
                 }
             }
 
@@ -2215,6 +2220,8 @@ private:
         const int screen = DefaultScreen (display);
         Window root = RootWindow (display, screen);
 
+        parentWindow = parentToAddTo;
+
         // Try to obtain a 32-bit visual or fallback to 24 or 16
         visual = Visuals::findVisualFormat ((styleFlags & windowIsSemiTransparent) ? 32 : 24, depth);
 
@@ -2377,11 +2384,11 @@ private:
         {
             Window root, child;
             int wx = 0, wy = 0;
-            unsigned int ww = 0, wh = 0, bw, depth;
+            unsigned int ww = 0, wh = 0, bw, bitDepth;
 
             ScopedXLock xlock;
 
-            if (XGetGeometry (display, (::Drawable) windowH, &root, &wx, &wy, &ww, &wh, &bw, &depth))
+            if (XGetGeometry (display, (::Drawable) windowH, &root, &wx, &wy, &ww, &wh, &bw, &bitDepth))
                 if (! XTranslateCoordinates (display, windowH, root, 0, 0, &wx, &wy, &child))
                     wx = wy = 0;
 
@@ -3002,10 +3009,10 @@ ModifierKeys ModifierKeys::getCurrentModifiersRealtime() noexcept
 
 
 //==============================================================================
-void Desktop::setKioskComponent (Component* kioskModeComponent, bool enableOrDisable, bool /* allowMenusAndBars */)
+void Desktop::setKioskComponent (Component* comp, bool enableOrDisable, bool /* allowMenusAndBars */)
 {
     if (enableOrDisable)
-        kioskModeComponent->setBounds (getDisplays().getMainDisplay().totalArea);
+        comp->setBounds (getDisplays().getMainDisplay().totalArea);
 }
 
 //==============================================================================
@@ -3192,6 +3199,34 @@ void MouseInputSource::setRawMousePosition (Point<float> newPosition)
 
 double Desktop::getDefaultMasterScale()
 {
+    // Ubuntu and derived distributions now save a per-display scale factor as a configuration
+    // variable. This can be changed in the Monitor system settings panel.
+    ChildProcess dconf;
+
+    if (dconf.start ("dconf read /com/ubuntu/user-interface/scale-factor", ChildProcess::wantStdOut))
+    {
+        if (dconf.waitForProcessToFinish (200))
+        {
+            String jsonOutput = dconf.readAllProcessOutput().replaceCharacter ('\'', '"');
+
+            if (dconf.getExitCode() == 0 && jsonOutput.isNotEmpty())
+            {
+                var jsonVar = JSON::parse (jsonOutput);
+
+                if (DynamicObject* object = jsonVar.getDynamicObject())
+                {
+                    NamedValueSet& scaleFactors = object->getProperties();
+
+                    double maxScaleFactor = 1.0;
+                    for (int i = 0; i < scaleFactors.size(); ++i)
+                        maxScaleFactor = jmax (maxScaleFactor, (double) (scaleFactors.getValueAt (i)) / 8.0);
+
+                    return maxScaleFactor;
+                }
+            }
+        }
+    }
+
     return 1.0;
 }
 

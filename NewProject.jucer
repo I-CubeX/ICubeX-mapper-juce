@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="s1h3wl" name="ICubeXMidi" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.NewProject" includeBinaryInAppConfig="1"
-              jucerVersion="3.1.0">
+              jucerVersion="3.1.1">
   <MAINGROUP id="K1gbOS" name="ICubeXMidi">
     <GROUP id="{C7D46B97-0931-1E09-720E-F0748E955B92}" name="Source">
       <GROUP id="{557C2C96-D36A-1742-AF37-29A13F1E5E72}" name="ICubeXInterface">

@@ -14,12 +14,19 @@
 MapperInterface::MapperInterface() : Thread("MapperInterfaceThread")
 {
     myMapperOut = new mapper::Device("ICubeX");
-    int min[8] = {  0,   0,   0,   0,   0,   0,   0,   0};
-    int max[8] = {127, 127, 127, 127, 127, 127, 127, 127};
-    //myMapper->add_output("/testSig1", 1, 'i', "num", 0, 0);
-    myMapperOut->add_output("/ICubeXSensors", kNUM_ICUBEX_SENSORS, 'i', "raw", &min, &max);
-    mySigVals.reserve(kNUM_ICUBEX_SENSORS);
+    //int min[8] = {  0,   0,   0,   0,   0,   0,   0,   0};
+    //int max[8] = {127, 127, 127, 127, 127, 127, 127, 127};
+    int min = 0;
+    int max = 127;
+    //myMapperOut->add_output("/ICubeXSensors", kNUM_ICUBEX_SENSORS, 'i', "raw", &min, &max);
     
+    mySigVals.reserve(kNUM_ICUBEX_SENSORS);
+    for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+    {
+        String signame = "/sensor" + String(i);
+        myMapperOut->add_output(signame.toStdString(), 1, 'i', "raw", &min, &max);
+        mySigVals.push_back(0);
+    }
     //myMapperOut->add_input("/testLoopback", 1, 'f', "Hz", &min, &max, inputHandler, 0);
     
     
@@ -43,7 +50,7 @@ void MapperInterface::run()
     while (!threadShouldExit())
     {
         //do stuff here...
-        
+        int idx=0;
         if (myMapperOut != NULL)
         {
             myMapperOut->poll();
@@ -51,10 +58,12 @@ void MapperInterface::run()
                 //DBG("updating " + (*it).full_name());
                 //there is only one in this case...]
                 threadLock.enter();
-                (*it).update(mySigVals);
+                int sensorVal = mySigVals.at(idx);
                 threadLock.exit();
+                (*it).update(sensorVal);
                 //(*it).update(0.0f);
             }
+            idx++;
             sleep(50); //lets not be too hasty here...
             
         }
