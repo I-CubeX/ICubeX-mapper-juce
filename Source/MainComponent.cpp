@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Introjucer version: 3.1.0
+  Created with Introjucer version: 3.1.1
 
   ------------------------------------------------------------------------------
 
@@ -29,6 +29,9 @@
 //==============================================================================
 MainWindow::MainWindow ()
 {
+    //[Constructor_pre] You can add your own custom stuff here..
+    //[/Constructor_pre]
+
     addAndMakeVisible (comboBoxMidiIn = new ComboBox ("midi in box"));
     comboBoxMidiIn->setTooltip (TRANS("list of MIDI inputs"));
     comboBoxMidiIn->setEditableText (false);
@@ -150,7 +153,7 @@ MainWindow::MainWindow ()
     DBG("starting mapper thread...\n");
     myMapperInterface->startThread();
     DBG("... started!\n");
-    
+
     //colour for plots
     //NamedValueSet props = labelSensor1->getProperties();
     //Colour* col = (Colour*)props.getVarPointerAt(Label::textColourId);
@@ -218,6 +221,9 @@ void MainWindow::paint (Graphics& g)
 
 void MainWindow::resized()
 {
+    //[UserPreResize] Add your own custom resize code here..
+    //[/UserPreResize]
+
     comboBoxMidiIn->setBounds (8, 8, 150, 24);
     comboBoxMidiOut->setBounds (8, 40, 150, 24);
     textButtonRefreshPorts->setBounds (168, 8, 95, 24);
