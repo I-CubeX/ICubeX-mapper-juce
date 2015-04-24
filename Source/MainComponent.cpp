@@ -53,10 +53,6 @@ MainWindow::MainWindow ()
     textButtonRefreshPorts->setButtonText (TRANS("Refresh Ports"));
     textButtonRefreshPorts->addListener (this);
 
-    addAndMakeVisible (textButtonTest = new TextButton ("new button"));
-    textButtonTest->setButtonText (TRANS("test"));
-    textButtonTest->addListener (this);
-
     addAndMakeVisible (toggleButtonSensors = new ToggleButton ("sensors toggle button"));
     toggleButtonSensors->setTooltip (TRANS("toggle sensors here"));
     toggleButtonSensors->setButtonText (TRANS("sensors active"));
@@ -164,7 +160,7 @@ MainWindow::MainWindow ()
 
     //[/UserPreSize]
 
-    setSize (600, 400);
+    setSize (600, 200);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -179,7 +175,6 @@ MainWindow::~MainWindow()
     comboBoxMidiIn = nullptr;
     comboBoxMidiOut = nullptr;
     textButtonRefreshPorts = nullptr;
-    textButtonTest = nullptr;
     toggleButtonSensors = nullptr;
     textButtonAutoConnect = nullptr;
     labelSensor1 = nullptr;
@@ -211,7 +206,7 @@ void MainWindow::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.fillAll (Colours::grey);
+    g.fillAll (Colours::white);
 
     //[UserPaint] Add your own custom painting code here..
     //draw sigPlotter
@@ -227,19 +222,18 @@ void MainWindow::resized()
     comboBoxMidiIn->setBounds (8, 8, 150, 24);
     comboBoxMidiOut->setBounds (8, 40, 150, 24);
     textButtonRefreshPorts->setBounds (168, 8, 95, 24);
-    textButtonTest->setBounds (192, 200, 64, 24);
-    toggleButtonSensors->setBounds (24, 200, 150, 24);
+    toggleButtonSensors->setBounds (24, 122, 150, 24);
     textButtonAutoConnect->setBounds (168, 40, 95, 24);
-    labelSensor1->setBounds (8, 80, 64, 24);
-    labelSensor2->setBounds (72, 80, 64, 24);
-    labelSensor3->setBounds (136, 80, 64, 24);
-    labelSensor4->setBounds (200, 80, 64, 24);
-    labelSensor5->setBounds (8, 104, 64, 24);
-    labelSensor6->setBounds (72, 104, 64, 24);
-    labelSensor7->setBounds (136, 104, 64, 24);
-    labelSensor8->setBounds (200, 104, 64, 24);
+    labelSensor1->setBounds (8, 68, 64, 24);
+    labelSensor2->setBounds (72, 68, 64, 24);
+    labelSensor3->setBounds (136, 68, 64, 24);
+    labelSensor4->setBounds (200, 68, 64, 24);
+    labelSensor5->setBounds (8, 92, 64, 24);
+    labelSensor6->setBounds (72, 92, 64, 24);
+    labelSensor7->setBounds (136, 92, 64, 24);
+    labelSensor8->setBounds (200, 92, 64, 24);
     //[UserResized] Add your own custom resize handling here..
-    mySigPlotter->setBounds(getWidth()/2, 5, getWidth()/2-5, getHeight()/2-5);
+    mySigPlotter->setBounds(getWidth()/2, 5, getWidth()/2-5, getHeight()-15);
     //[/UserResized]
 }
 
@@ -280,12 +274,6 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
         RefreshPorts();
 
         //[/UserButtonCode_textButtonRefreshPorts]
-    }
-    else if (buttonThatWasClicked == textButtonTest)
-    {
-        //[UserButtonCode_textButtonTest] -- add your button handler code here..
-        SendStream(true, 0);
-        //[/UserButtonCode_textButtonTest]
     }
     else if (buttonThatWasClicked == toggleButtonSensors)
     {
@@ -442,7 +430,7 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component, public ICubeXInterface, public MidiInputCallback"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="600"
-                 initialHeight="400">
+                 initialHeight="200">
   <BACKGROUND backgroundColour="ffffffff"/>
   <COMBOBOX name="midi in box" id="6d56b5526b211a0b" memberName="comboBoxMidiIn"
             virtualName="" explicitFocusOrder="0" pos="8 8 150 24" tooltip="list of MIDI inputs"
@@ -456,11 +444,8 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="168 8 95 24" tooltip="refresh MIDI ports"
               buttonText="Refresh Ports" connectedEdges="0" needsCallback="1"
               radioGroupId="0"/>
-  <TEXTBUTTON name="new button" id="5dfe519aef3ddc73" memberName="textButtonTest"
-              virtualName="" explicitFocusOrder="0" pos="192 200 64 24" buttonText="test"
-              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TOGGLEBUTTON name="sensors toggle button" id="3771bf04353d3be1" memberName="toggleButtonSensors"
-                virtualName="" explicitFocusOrder="0" pos="24 200 150 24" tooltip="toggle sensors here"
+                virtualName="" explicitFocusOrder="0" pos="24 122 150 24" tooltip="toggle sensors here"
                 buttonText="sensors active" connectedEdges="0" needsCallback="1"
                 radioGroupId="0" state="0"/>
   <TEXTBUTTON name="auto connect button" id="b54ab90f08d157a3" memberName="textButtonAutoConnect"
@@ -468,42 +453,42 @@ BEGIN_JUCER_METADATA
               buttonText="Auto Connect" connectedEdges="0" needsCallback="1"
               radioGroupId="0"/>
   <LABEL name="new label" id="96fa6019cd20e93" memberName="labelSensor1"
-         virtualName="" explicitFocusOrder="0" pos="8 80 64 24" textCol="ff0000ff"
+         virtualName="" explicitFocusOrder="0" pos="8 68 64 24" textCol="ff0000ff"
          edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="e3902ee2234690f9" memberName="labelSensor2"
-         virtualName="" explicitFocusOrder="0" pos="72 80 64 24" textCol="ff008000"
+         virtualName="" explicitFocusOrder="0" pos="72 68 64 24" textCol="ff008000"
          edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="4d2ec8bc35a78fda" memberName="labelSensor3"
-         virtualName="" explicitFocusOrder="0" pos="136 80 64 24" textCol="ff8a2be2"
+         virtualName="" explicitFocusOrder="0" pos="136 68 64 24" textCol="ff8a2be2"
          edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="ef80babd10d6f897" memberName="labelSensor4"
-         virtualName="" explicitFocusOrder="0" pos="200 80 64 24" textCol="ff6495ed"
+         virtualName="" explicitFocusOrder="0" pos="200 68 64 24" textCol="ff6495ed"
          edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="705c5368a7bf0b51" memberName="labelSensor5"
-         virtualName="" explicitFocusOrder="0" pos="8 104 64 24" textCol="ff2ab483"
+         virtualName="" explicitFocusOrder="0" pos="8 92 64 24" textCol="ff2ab483"
          edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="c3939c3b937756aa" memberName="labelSensor6"
-         virtualName="" explicitFocusOrder="0" pos="72 104 64 24" textCol="ffa52a2a"
+         virtualName="" explicitFocusOrder="0" pos="72 92 64 24" textCol="ffa52a2a"
          edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="5af2718dd3fc93d7" memberName="labelSensor7"
-         virtualName="" explicitFocusOrder="0" pos="136 104 64 24" textCol="ffe81dd5"
+         virtualName="" explicitFocusOrder="0" pos="136 92 64 24" textCol="ffe81dd5"
          edTextCol="ff000000" edBkgCol="0" labelText="sensor" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="539233305d9aeeb5" memberName="labelSensor8"
-         virtualName="" explicitFocusOrder="0" pos="200 104 64 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="200 92 64 24" edTextCol="ff000000"
          edBkgCol="0" labelText="sensor" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="33"/>

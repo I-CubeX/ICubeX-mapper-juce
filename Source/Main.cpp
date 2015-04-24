@@ -17,7 +17,7 @@
 class ICubeXMidiWindow : public DocumentWindow
 {
 public:
-    ICubeXMidiWindow() : DocumentWindow ("ICubeX MIDI Test",
+    ICubeXMidiWindow() : DocumentWindow ("I-CubeX->libmapper App",
                                    Colours::lightgrey,
                                    DocumentWindow::allButtons,
                                          true)
