@@ -106,7 +106,7 @@ public:
             float dX = (float)i * 25;
             
             g.setColour(juce::Colours::black);
-            g.fillRect(dX, 0.0, 10.0, dY);
+            //g.fillRect(dX, 0.0, 10.0, dY);
             oX = g.getClipBounds().getX();
             oY = g.getClipBounds().getY();
             if (i==0)
