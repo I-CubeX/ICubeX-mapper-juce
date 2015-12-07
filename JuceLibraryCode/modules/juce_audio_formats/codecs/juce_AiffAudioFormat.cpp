@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2015 - ROLI Ltd.
 
    Permission is granted to use this software under the terms of either:
    a) the GPL v2 (or any later version)
@@ -249,7 +249,7 @@ namespace AiffFileHelpers
 
                 data += isGenre ? 118 : 50;
 
-                if (data[0] == 0)
+                if (data < dataEnd && data[0] == 0)
                 {
                     if      (data + 52  < dataEnd && isValidTag (data + 50))   data += 50;
                     else if (data + 120 < dataEnd && isValidTag (data + 118))  data += 118;
@@ -341,10 +341,10 @@ namespace AiffFileHelpers
                     out.writeByte ((char) labelLength + 1);
                     out.write (label.toUTF8(), labelLength);
                     out.writeByte (0);
-                }
 
-                if ((out.getDataSize() & 1) != 0)
-                    out.writeByte (0);
+                    if ((out.getDataSize() & 1) != 0)
+                        out.writeByte (0);
+                }
             }
         }
     }
@@ -643,7 +643,7 @@ public:
 
         if (metadataValues.size() > 0)
         {
-            // The meta data should have been santised for the AIFF format.
+            // The meta data should have been sanitised for the AIFF format.
             // If it was originally sourced from a WAV file the MetaDataSource
             // key should be removed (or set to "AIFF") once this has been done
             jassert (metadataValues.getValue ("MetaDataSource", "None") != "WAV");
@@ -889,17 +889,11 @@ public:
 
     void readMaxLevels (int64 startSampleInFile, int64 numSamples, Range<float>* results, int numChannelsToRead) override
     {
-        if (numSamples <= 0)
-        {
-            for (int i = 0; i < numChannelsToRead; ++i)
-                results[i] = Range<float>();
+        numSamples = jmin (numSamples, lengthInSamples - startSampleInFile);
 
-            return;
-        }
-
-        if (map == nullptr || ! mappedSection.contains (Range<int64> (startSampleInFile, startSampleInFile + numSamples)))
+        if (map == nullptr || numSamples <= 0 || ! mappedSection.contains (Range<int64> (startSampleInFile, startSampleInFile + numSamples)))
         {
-            jassertfalse; // you must make sure that the window contains all the samples you're going to attempt to read.
+            jassert (numSamples <= 0); // you must make sure that the window contains all the samples you're going to attempt to read.
 
             for (int i = 0; i < numChannelsToRead; ++i)
                 results[i] = Range<float>();

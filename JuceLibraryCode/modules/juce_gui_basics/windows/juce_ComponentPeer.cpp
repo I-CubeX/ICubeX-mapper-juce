@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2015 - ROLI Ltd.
 
    Permission is granted to use this software under the terms of either:
    a) the GPL v2 (or any later version)
@@ -85,10 +85,10 @@ bool ComponentPeer::isKioskMode() const
 }
 
 //==============================================================================
-void ComponentPeer::handleMouseEvent (int touchIndex, Point<float> pos, ModifierKeys newMods, int64 time)
+void ComponentPeer::handleMouseEvent (int touchIndex, Point<float> pos, ModifierKeys newMods, float newPressure, int64 time)
 {
     if (MouseInputSource* mouse = Desktop::getInstance().mouseSources->getOrCreateMouseInputSource (touchIndex))
-        MouseInputSource (*mouse).handleEvent (*this, pos, time, newMods);
+        MouseInputSource (*mouse).handleEvent (*this, pos, time, newMods, newPressure);
 }
 
 void ComponentPeer::handleMouseWheel (int touchIndex, Point<float> pos, int64 time, const MouseWheelDetails& wheel)
@@ -187,7 +187,7 @@ bool ComponentPeer::handleKeyPress (const int keyCode, const juce_wchar textChar
     {
         const WeakReference<Component> deletionChecker (target);
 
-        if (const Array <KeyListener*>* const keyListeners = target->keyListeners)
+        if (const Array<KeyListener*>* const keyListeners = target->keyListeners)
         {
             for (int i = keyListeners->size(); --i >= 0;)
             {
@@ -238,7 +238,7 @@ bool ComponentPeer::handleKeyUpOrDown (const bool isKeyDown)
         if (keyWasUsed || deletionChecker == nullptr)
             break;
 
-        if (const Array <KeyListener*>* const keyListeners = target->keyListeners)
+        if (const Array<KeyListener*>* const keyListeners = target->keyListeners)
         {
             for (int i = keyListeners->size(); --i >= 0;)
             {
@@ -275,7 +275,7 @@ TextInputTarget* ComponentPeer::findCurrentTextInputTarget()
 {
     Component* const c = Component::getCurrentlyFocusedComponent();
 
-    if (component.isParentOf (c))
+    if (c == &component || component.isParentOf (c))
         if (TextInputTarget* const ti = dynamic_cast<TextInputTarget*> (c))
             if (ti->isTextInputActive())
                 return ti;

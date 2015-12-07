@@ -2,7 +2,7 @@
   ==============================================================================
 
    This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2015 - ROLI Ltd.
 
    Permission to use, copy, modify, and/or distribute this software for any purpose with
    or without fee is hereby granted, provided that the above copyright notice and this
@@ -204,7 +204,6 @@ public:
             [data setLength: 0];
         }
 
-        initialised = true;
         contentLength = [response expectedContentLength];
 
         [headers release];
@@ -216,6 +215,8 @@ public:
             headers = [[httpResponse allHeaderFields] retain];
             statusCode = (int) [httpResponse statusCode];
         }
+
+        initialised = true;
     }
 
     NSURLRequest* willSendRequest (NSURLRequest* newRequest, NSURLResponse* redirectResponse)
@@ -349,9 +350,10 @@ public:
     WebInputStream (const String& address_, bool isPost_, const MemoryBlock& postData_,
                     URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
                     const String& headers_, int timeOutMs_, StringPairArray* responseHeaders,
-                    const int numRedirectsToFollow_)
+                    const int numRedirectsToFollow_, const String& httpRequestCmd_)
       : statusCode (0), address (address_), headers (headers_), postData (postData_), position (0),
-        finished (false), isPost (isPost_), timeOutMs (timeOutMs_), numRedirectsToFollow (numRedirectsToFollow_)
+        finished (false), isPost (isPost_), timeOutMs (timeOutMs_),
+        numRedirectsToFollow (numRedirectsToFollow_), httpRequestCmd (httpRequestCmd_)
     {
         JUCE_AUTORELEASEPOOL
         {
@@ -428,6 +430,7 @@ private:
     const bool isPost;
     const int timeOutMs;
     const int numRedirectsToFollow;
+    String httpRequestCmd;
 
     void createConnection (URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext)
     {
@@ -439,7 +442,7 @@ private:
 
         if (req != nil)
         {
-            [req setHTTPMethod: nsStringLiteral (isPost ? "POST" : "GET")];
+            [req setHTTPMethod: [NSString stringWithUTF8String: httpRequestCmd.toRawUTF8()]];
             //[req setCachePolicy: NSURLRequestReloadIgnoringLocalAndRemoteCacheData];
 
             StringArray headerLines;
