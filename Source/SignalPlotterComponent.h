@@ -9,31 +9,33 @@
  ==============================================================================
  */
 
+#ifndef _SIGNALPLOTTERCOMPONENT_H_
+#define _SIGNALPLOTTERCOMPONENT_H_
+
 #include "ICubeXInterface/ICubeXInteface.h"
 #include "JuceHeader.h"
 #include <deque>
 
-#define kNUM_PLOT_PTS 256
+#define kNUM_PLOT_PTS 1024
+#define kSAMPLES_PER_PIXEL 32
 
-class SignalPlotterComponent  : public Component
+#define NUM_PLOTS kNUM_ICUBEX_SENSORS
+
+
+class SignalPlotterComponent  : public AudioVisualiserComponent
 {
 public:
    
+   AudioSampleBuffer* buff;
    
-   
-   SignalPlotterComponent()
+   SignalPlotterComponent() : AudioVisualiserComponent(NUM_PLOTS)
    {
-      myTimeElapsed = 0.0;
-      for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
-      {
-         std::deque<int> newRow;
-         newRow.shrink_to_fit();
-         myPlotData.push_back(newRow);
-         latestVals[i] = 0.0;
-      }
-      SetPlotColour(0, Colours::blue);
-      SetPlotColour(1, Colours::green);
+      clear();
+      setBufferSize(kNUM_PLOT_PTS);
+      setSamplesPerBlock(kSAMPLES_PER_PIXEL);
+      buff = new AudioSampleBuffer(NUM_PLOTS, kNUM_PLOT_PTS);
    }
+   
    
    void SetPlotColour(int idx, Colour col)
    {
@@ -42,133 +44,37 @@ public:
    
    void updateSigs(int* sigArray)
    {
-      for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+
+      buff->clear();
+      
+      //TODO: don't new it every time
+      
+      for (int i=0; i<NUM_PLOTS; i++)
       {
-         latestVals[i] = sigArray[i];
-         /*
-          if (myPlotData[i].size() > kNUM_PLOT_PTS-1)
-          {
-          myPlotData[i].pop_front();
-          }
-          myPlotData[i].push_back(sigArray[i]);
-          if (i==0)
-          {
-          //DBG(" " + String(sigArray[i])+ "size of array=" + String((int)myPlotData[i].size()));
-          
-          }
-          */
+         float val = 2.0*(((float) sigArray[i] / 127.0) - 0.5);
+         if (val > 1.0) val = 1.0;
+         if (val < -1.0) val = -1.0;
+         DBG("val = " + String::formatted("%2.2f", val));
+         
+         //val = 0.0;
+         for (int j=0; j<kSAMPLES_PER_PIXEL; j++)
+         {
+            
+            buff->addSample(i, j, val);
+            //this->pushSample(&val, i);
+            
+         }
       }
+      this->pushBuffer(*buff);
+      
    }
    
-   void drawSignals(Graphics &g)
+   ~SignalPlotterComponent()
    {
-      g.setColour(juce::Colours::black);
-      g.drawRect(originX-1, originY, width, height+2, 1); //minor tweaks since my plot method is kinda funny
-      
-      float oX = g.getClipBounds().getX();
-      float oY = g.getClipBounds().getY();
-      g.setOrigin(originX, originY);
-      oX = g.getClipBounds().getX();
-      oY = g.getClipBounds().getY();
-      
-      //g.setColour(juce::Colours::green);
-      //g.fillRect(0, 0, width, height);
-      
-      g.setOrigin(0, height/2);
-      
-      //g.setColour(juce::Colours::pink);
-      //g.fillRect(0, 0, width, height/2);
-      
-      g.drawLine(0, 0, width-1, 0);
-      
-      if (false)
-      {
-         g.setColour(myPlotColours[0]);
-         for (int i=0; i<kNUM_PLOT_PTS; i++)
-         {
-            float x = (float)i/(float(kNUM_PLOT_PTS));
-            float y = sin(2.0*M_PI*x);
-            float dx =  x * (float)width;
-            float dy =  -y*(float)height/2.0;
-            g.drawLine(dx, dy, dx+1, dy+1);
-         }
-      }
-      
-      g.setColour(myPlotColours[0]);
-      int j=0;
-      //for (std::deque<int>::iterator it = myPlotData[0].begin(); it != myPlotData[0].end(); ++it)
-      
-      //int plotlen = myPlotData[0].size();
-      
-      for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
-      {
-         float dY = i*25+10.0;//(float)height*(float)latestVals[i]/127.0 + 10.0;
-         float dX = (float)i * 25;
-         
-         g.setColour(juce::Colours::black);
-         //g.fillRect(dX, 0.0, 10.0, dY);
-         oX = g.getClipBounds().getX();
-         oY = g.getClipBounds().getY();
-         if (i==0){
-            //DBG("dY[0] = " + String(dY));
-         }
-      }
-      
-      return;
-      for (int i=0; i<1; i++) //just the first one for now
-      {
-         int j = 0;
-         for (std::deque<int>::iterator it = myPlotData[i].begin(); it != myPlotData[i].end(); ++it)
-         {
-            float x = (float)j/(float(kNUM_PLOT_PTS));
-            float y = sin(2.0*M_PI*x);
-            float dx =  x * (float)width;
-            float dy =  -y*(float)height/2.0;
-            
-            g.drawLine(dx, dy, dx+1, dy+1);
-            j++;
-            oX = g.getClipBounds().getX();
-            oY = g.getClipBounds().getY();
-            
-            
-            
-            //                int len2 = myPlotData[0].size();
-            //                if ( (j==len2-1) && (i==0) )
-            //                {
-            //                    int len = myPlotData.size();
-            //                    int val = myPlotData[0].at(len2-1);
-            //                    DBG("val=" + String((int)(*it)));
-            //                    //g.drawRect((float)originX, (float)originY, (float)val, (float)val, 2.0);
-            //                    radius = val* 3;
-            //
-            //
-            //                    g.setColour(juce::Colours::pink);
-            //                    g.fillRect((float)originX+25, (float)originY+35,
-            //                               200.0, 200.0);
-            //
-            //                }
-         }
-         DBG(String(j));
-         
-         //DBG("\n");
-      }
-      
-      
-      
-   }
-   void setBounds(int x, int y, int w, int h)
-   {
-      originX = x;
-      originY = y;
-      width = w;
-      height = h;
+      delete buff;
    }
    
 private:
-   int originX;
-   int originY;
-   int width;
-   int height;
    
    int latestVals[kNUM_ICUBEX_SENSORS];
    
@@ -177,3 +83,5 @@ private:
    juce::Colour myPlotColours[kNUM_ICUBEX_SENSORS];
    
 };
+
+#endif //define _SIGNALPLOTTERCOMPONENT_H_

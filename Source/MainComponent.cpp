@@ -7,12 +7,12 @@
  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
  and re-saved.
  
- Created with Introjucer version: 3.1.1
+ Created with Introjucer version: 4.0.2
  
  ------------------------------------------------------------------------------
  
  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
- Copyright 2004-13 by Raw Material Software Ltd.
+ Copyright (c) 2015 - ROLI Ltd.
  
  ==============================================================================
  */
@@ -143,6 +143,7 @@ MainWindow::MainWindow ()
    
    //init SigPlotter
    mySigPlotter = new SignalPlotterComponent();
+   addAndMakeVisible(mySigPlotter);
    
    //start mapper interface
    myMapperInterface = new MapperInterface();
@@ -188,6 +189,12 @@ MainWindow::~MainWindow()
    
    
    //[Destructor]. You can add your own custom destruction code here..
+   
+   //stop digitizer
+   
+   SendReset();
+   
+   
    if (myMapperInterface != NULL)
    {
       DBG("quit called from main window\n");
@@ -210,7 +217,6 @@ void MainWindow::paint (Graphics& g)
    
    //[UserPaint] Add your own custom painting code here..
    //draw sigPlotter
-   mySigPlotter->drawSignals(g);
    //[/UserPaint]
 }
 
@@ -234,6 +240,7 @@ void MainWindow::resized()
    labelSensor8->setBounds (200, 92, 64, 24);
    //[UserResized] Add your own custom resize handling here..
    mySigPlotter->setBounds(getWidth()/2, 5, getWidth()/2-5, getHeight()-15);
+   mySigPlotter->setColours(juce::Colour::fromRGB(0, 0, 0), juce::Colour::fromRGB(0, 255, 0));
    //[/UserResized]
 }
 
@@ -355,7 +362,8 @@ void MainWindow::SelectMidiOut(int idx)
 void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message)
 {
    if (message.isSysEx())
-   {
+   {    //note: our parser expects a "full" sysex
+      // message, so we need to put back 0xF0 header and 0xF7 footer bytes!
       std::vector<unsigned char> data;
       data.reserve(message.getSysExDataSize()+2);
       data.insert(data.begin(), 0xF0);

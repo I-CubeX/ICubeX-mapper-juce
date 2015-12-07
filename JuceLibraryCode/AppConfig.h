@@ -22,14 +22,17 @@
 // [END_USER_CODE_SECTION]
 
 //==============================================================================
-#define JUCE_MODULE_AVAILABLE_juce_audio_basics         1
-#define JUCE_MODULE_AVAILABLE_juce_audio_devices        1
-#define JUCE_MODULE_AVAILABLE_juce_audio_formats        1
-#define JUCE_MODULE_AVAILABLE_juce_core                 1
-#define JUCE_MODULE_AVAILABLE_juce_data_structures      1
-#define JUCE_MODULE_AVAILABLE_juce_events               1
-#define JUCE_MODULE_AVAILABLE_juce_graphics             1
-#define JUCE_MODULE_AVAILABLE_juce_gui_basics           1
+#define JUCE_MODULE_AVAILABLE_juce_audio_basics          1
+#define JUCE_MODULE_AVAILABLE_juce_audio_devices         1
+#define JUCE_MODULE_AVAILABLE_juce_audio_formats         1
+#define JUCE_MODULE_AVAILABLE_juce_audio_processors      1
+#define JUCE_MODULE_AVAILABLE_juce_audio_utils           1
+#define JUCE_MODULE_AVAILABLE_juce_core                  1
+#define JUCE_MODULE_AVAILABLE_juce_data_structures       1
+#define JUCE_MODULE_AVAILABLE_juce_events                1
+#define JUCE_MODULE_AVAILABLE_juce_graphics              1
+#define JUCE_MODULE_AVAILABLE_juce_gui_basics            1
+#define JUCE_MODULE_AVAILABLE_juce_gui_extra             1
 
 //==============================================================================
 #ifndef    JUCE_STANDALONE_APPLICATION
@@ -99,6 +102,21 @@
 #endif
 
 //==============================================================================
+// juce_audio_processors flags:
+
+#ifndef    JUCE_PLUGINHOST_VST
+ //#define JUCE_PLUGINHOST_VST
+#endif
+
+#ifndef    JUCE_PLUGINHOST_VST3
+ //#define JUCE_PLUGINHOST_VST3
+#endif
+
+#ifndef    JUCE_PLUGINHOST_AU
+ //#define JUCE_PLUGINHOST_AU
+#endif
+
+//==============================================================================
 // juce_core flags:
 
 #ifndef    JUCE_FORCE_DEBUG
@@ -153,6 +171,17 @@
 
 #ifndef    JUCE_USE_XCURSOR
  //#define JUCE_USE_XCURSOR
+#endif
+
+//==============================================================================
+// juce_gui_extra flags:
+
+#ifndef    JUCE_WEB_BROWSER
+ //#define JUCE_WEB_BROWSER
+#endif
+
+#ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR
+ //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR
 #endif
 
 
