@@ -35,10 +35,10 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="mapper-0">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="default"
-                       isDebug="1" optimisation="1" targetName="NewProject" headerPath="/usr/local/include/mapper-0/&#10;/usr/local/include/"
+                       isDebug="1" optimisation="1" targetName="ICubeXMapper" headerPath="/usr/local/include/mapper-0/&#10;/usr/local/include/"
                        libraryPath="/usr/local/lib/"/>
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="default"
-                       isDebug="0" optimisation="2" targetName="NewProject" headerPath="/usr/local/include/mapper-0/&#10;/usr/local/include/"
+                       isDebug="0" optimisation="2" targetName="ICubeXMapper" headerPath="/usr/local/include/mapper-0/&#10;/usr/local/include/"
                        libraryPath="/usr/local/lib/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
