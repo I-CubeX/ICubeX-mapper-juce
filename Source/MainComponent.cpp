@@ -142,6 +142,10 @@ MainWindow::MainWindow ()
    myDeviceManager->initialise(2, 2, 0, true, String::empty, 0);
    currentPortName = "none";
    
+   //init ICubeX Component
+   myICubeX = new ICubeMIDIComponent();
+   myICubeX->addChangeListener(this);
+   
    //init SigPlotter
    mySigPlotter = new SignalPlotterComponent();
    addAndMakeVisible(mySigPlotter);
@@ -174,10 +178,9 @@ MainWindow::~MainWindow()
    //[Destructor_pre]. You can add your own custom destruction code here..
    //stop digitizer
    
-   for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
-   {
-      SendStream(false, i);
-   }
+   myICubeX->setAllSensors(false);
+   
+   myDeviceManager->getDefaultMidiOutput()->clearAllPendingMessages();
 
    //[/Destructor_pre]
    
@@ -206,7 +209,6 @@ MainWindow::~MainWindow()
       DBG("mapperInterface thread stopped\n");
       //delete myMapperInterface;
    }
-   myMidiOut = nullptr;
    myDeviceManager = nullptr;
    //[/Destructor]
 }
@@ -289,10 +291,8 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
    else if (buttonThatWasClicked == toggleButtonSensors)
    {
       //[UserButtonCode_toggleButtonSensors] -- add your button handler code here..
-      for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
-      {
-         SendStream(!my_digitizer_state_.GetIsSensorOnState(0), i);
-      }
+      bool stream = toggleButtonSensors->getToggleState();
+      myICubeX->setAllSensors(stream);
       //[/UserButtonCode_toggleButtonSensors]
    }
    else if (buttonThatWasClicked == textButtonAutoConnect)
@@ -308,6 +308,12 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+
+void MainWindow::changeListenerCallback(juce::ChangeBroadcaster *source)
+{
+   updateSensorVals();
+   updateLabels();
+}
 
 void MainWindow::RefreshPorts()
 {
@@ -340,7 +346,7 @@ void MainWindow::SelectMidiIn(int idx)
    
    if (! myDeviceManager->isMidiInputEnabled(newInput)) {
       myDeviceManager->setMidiInputEnabled(newInput, true);
-      myDeviceManager->addMidiInputCallback(newInput, this);
+      myDeviceManager->addMidiInputCallback(newInput, myICubeX);
       currentPortName = newInput;
       
    }
@@ -354,12 +360,8 @@ void MainWindow::SelectMidiOut(int idx)
    const String newOutput(list[idx]);
    
    myDeviceManager->setDefaultMidiOutput(newOutput);
-   
-   //    myDeviceManager->getDefaultMidiOutput();
-   //    MidiMessage msg(0xff);
-   //    if (myMidiOut != nullptr)
-   //        myMidiOut->sendMessageNow(msg);
-   SendReset();
+   myICubeX->setOutputPort(myDeviceManager->getDefaultMidiOutput());
+   myICubeX->SendReset();
    
    DBG("selected midi out " + newOutput);
 }
@@ -368,46 +370,61 @@ void MainWindow::SelectMidiOut(int idx)
 //NOTE: we really should be processing this in the NON-UI thread!
 void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message)
 {
-   if (message.isSysEx())
-   {    //note: our parser expects a "full" sysex
-      // message, so we need to put back 0xF0 header and 0xF7 footer bytes!
-      std::vector<unsigned char> data;
-      data.reserve(message.getSysExDataSize()+2);
-      data.insert(data.begin(), 0xF0);
-      for (int i=0; i<message.getSysExDataSize(); i++)
-      {
-         data.insert(data.end(), message.getSysExData()[i]);
-         //DBG(String((unsigned int)(message.getSysExData()[i]))+ " ");
-      }
-      data.insert(data.end(), 0xF7);
-      ParseSysEx(data);
-   }
-   
-   //this is some needless array/vector data conversion right here
-   std::vector<int> newVec;
-   unsigned arraySize = kNUM_ICUBEX_SENSORS;
-   newVec.insert(newVec.end(), &my_digitizer_state_.GetSensorValsArray()[0], &my_digitizer_state_.GetSensorValsArray()[arraySize]);
-   myMapperInterface->updateVals(newVec);
-   mySigPlotter->updateSigs(my_digitizer_state_.GetSensorValsArray());
+//   if (message.isSysEx())
+//   {    //note: our parser expects a "full" sysex
+//      // message, so we need to put back 0xF0 header and 0xF7 footer bytes!
+//      std::vector<unsigned char> data;
+//      data.reserve(message.getSysExDataSize()+2);
+//      data.insert(data.begin(), 0xF0);
+//      for (int i=0; i<message.getSysExDataSize(); i++)
+//      {
+//         data.insert(data.end(), message.getSysExData()[i]);
+//         //DBG(String((unsigned int)(message.getSysExData()[i]))+ " ");
+//      }
+//      data.insert(data.end(), 0xF7);
+//      ParseSysEx(data);
+//   }
+//   
+//   //this is some needless array/vector data conversion right here
+//   std::vector<int> newVec;
+//   unsigned arraySize = kNUM_ICUBEX_SENSORS;
+//   newVec.insert(newVec.end(), &my_digitizer_state_.GetSensorValsArray()[0], &my_digitizer_state_.GetSensorValsArray()[arraySize]);
+//   myMapperInterface->updateVals(newVec);
+//   mySigPlotter->updateSigs(my_digitizer_state_.GetSensorValsArray());
    
    //we only have 8 fixed sensors...
    //but still should probably auto generate GUI elements in the future and do away
    //with this terrible hardcoding...
-   
-   
-   MessageManagerLock mml;
-   if (mml.lockWasGained()) {
-      labelSensor1->setText(String(my_digitizer_state_.GetSensorValState(0)), dontSendNotification);
-      labelSensor2->setText(String(my_digitizer_state_.GetSensorValState(1)), dontSendNotification);
-      labelSensor3->setText(String(my_digitizer_state_.GetSensorValState(2)), dontSendNotification);
-      labelSensor4->setText(String(my_digitizer_state_.GetSensorValState(3)), dontSendNotification);
-      labelSensor5->setText(String(my_digitizer_state_.GetSensorValState(4)), dontSendNotification);
-      labelSensor6->setText(String(my_digitizer_state_.GetSensorValState(5)), dontSendNotification);
-      labelSensor7->setText(String(my_digitizer_state_.GetSensorValState(6)), dontSendNotification);
-      labelSensor8->setText(String(my_digitizer_state_.GetSensorValState(7)), dontSendNotification);
-   }
    //DBG("\nmidi msg received: \n");
    
+}
+
+void MainWindow::updateSensorVals()
+{
+   for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+   {
+      sensorValues[i] = myICubeX->my_digitizer_state_.GetSensorValState(i);
+   }
+   //this is some needless array/vector data conversion right here
+   std::vector<int> newVec(sensorValues, sensorValues+kNUM_ICUBEX_SENSORS);
+   myMapperInterface->updateVals(newVec);
+   mySigPlotter->updateSigs(sensorValues);
+   
+}
+
+void MainWindow::updateLabels()
+{
+   MessageManagerLock mml;
+   if (mml.lockWasGained()) {
+      labelSensor1->setText(String(sensorValues[0]), dontSendNotification);
+      labelSensor2->setText(String(sensorValues[1]), dontSendNotification);
+      labelSensor3->setText(String(sensorValues[2]), dontSendNotification);
+      labelSensor4->setText(String(sensorValues[3]), dontSendNotification);
+      labelSensor5->setText(String(sensorValues[4]), dontSendNotification);
+      labelSensor6->setText(String(sensorValues[5]), dontSendNotification);
+      labelSensor7->setText(String(sensorValues[6]), dontSendNotification);
+      labelSensor8->setText(String(sensorValues[7]), dontSendNotification);
+   }
 }
 
 void MainWindow::handlePartialSysexMessage(MidiInput* input, const uint8 *msg, int numBytesSoFar, double timestamp)
@@ -416,18 +433,18 @@ void MainWindow::handlePartialSysexMessage(MidiInput* input, const uint8 *msg, i
    DBG("sysex msg received\n");
 }
 
-void MainWindow::sendSysExCmd()
-{
-   std::vector<unsigned char> sendBuff = getSysExBuffer();
-   unsigned char* ptrData = new unsigned char[sendBuff.size()];
-   for (int i=0; i<sendBuff.size(); i++) {
-      ptrData[i] = sendBuff.at(i);
-   }
-   DBG("size of data =" + String((int)sendBuff.size()));
-   MidiMessage msg(ptrData, sendBuff.size()); //living dangerously
-   if (myDeviceManager->getDefaultMidiOutput() != nullptr)
-      myDeviceManager->getDefaultMidiOutput()->sendMessageNow(msg);
-}
+//void MainWindow::sendSysExCmd()
+//{
+//   std::vector<unsigned char> sendBuff = getSysExBuffer();
+//   unsigned char* ptrData = new unsigned char[sendBuff.size()];
+//   for (int i=0; i<sendBuff.size(); i++) {
+//      ptrData[i] = sendBuff.at(i);
+//   }
+//   DBG("size of data =" + String((int)sendBuff.size()));
+//   MidiMessage msg(ptrData, sendBuff.size()); //living dangerously
+//   if (myDeviceManager->getDefaultMidiOutput() != nullptr)
+//      myDeviceManager->getDefaultMidiOutput()->sendMessageNow(msg);
+//}
 //[/MiscUserCode]
 
 

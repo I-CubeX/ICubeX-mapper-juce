@@ -110,7 +110,7 @@ public:
    void timerCallback()
    {
 
-      DBG("timerCallback");
+      //DBG("timerCallback");
       fillDrawBuffer();
       repaint();
 

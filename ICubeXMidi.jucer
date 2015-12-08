@@ -19,6 +19,10 @@
         <FILE id="O0nVeT" name="ICubeXSysExTranslator.h" compile="0" resource="0"
               file="Source/ICubeXInterface/ICubeXSysExTranslator.h"/>
       </GROUP>
+      <FILE id="phVhJX" name="ICubeMIDIComponent.cpp" compile="1" resource="0"
+            file="Source/ICubeMIDIComponent.cpp"/>
+      <FILE id="eQnM54" name="ICubeMIDIComponent.h" compile="0" resource="0"
+            file="Source/ICubeMIDIComponent.h"/>
       <FILE id="lo3GGh" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="q8wsAI" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
