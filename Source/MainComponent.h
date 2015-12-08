@@ -80,6 +80,7 @@ private:
    ScopedPointer<AudioDeviceManager> myDeviceManager;
    ScopedPointer<SignalPlotterComponent> mySigPlotter;
    String currentPortName;
+   
     //[/UserVariables]
 
     //==============================================================================

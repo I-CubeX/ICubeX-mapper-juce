@@ -364,6 +364,8 @@ void MainWindow::SelectMidiOut(int idx)
    DBG("selected midi out " + newOutput);
 }
 
+
+//NOTE: we really should be processing this in the NON-UI thread!
 void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message)
 {
    if (message.isSysEx())
@@ -387,7 +389,6 @@ void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage
    newVec.insert(newVec.end(), &my_digitizer_state_.GetSensorValsArray()[0], &my_digitizer_state_.GetSensorValsArray()[arraySize]);
    myMapperInterface->updateVals(newVec);
    mySigPlotter->updateSigs(my_digitizer_state_.GetSensorValsArray());
-   
    
    //we only have 8 fixed sensors...
    //but still should probably auto generate GUI elements in the future and do away
