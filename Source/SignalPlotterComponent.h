@@ -17,7 +17,7 @@
 #include <deque>
 
 #define kNUM_PLOT_PTS 1024
-#define kSAMPLES_PER_PIXEL 32
+#define kSAMPLES_PER_PIXEL 4
 
 #define NUM_PLOTS kNUM_ICUBEX_SENSORS
 
@@ -30,10 +30,18 @@ public:
    
    SignalPlotterComponent() : AudioVisualiserComponent(NUM_PLOTS)
    {
+      val = 0.5;
       clear();
       setBufferSize(kNUM_PLOT_PTS);
       setSamplesPerBlock(kSAMPLES_PER_PIXEL);
-      buff = new AudioSampleBuffer(NUM_PLOTS, kNUM_PLOT_PTS);
+      setRepaintRate(60);
+      
+      buff = new AudioSampleBuffer(NUM_PLOTS, kSAMPLES_PER_PIXEL);
+      
+      for (int i=0; i< NUM_PLOTS; i++)
+      {
+         latestVals[i] = 0.0;
+      }
    }
    
    
@@ -44,29 +52,85 @@ public:
    
    void updateSigs(int* sigArray)
    {
-
-      buff->clear();
-      
-      //TODO: don't new it every time
-      
       for (int i=0; i<NUM_PLOTS; i++)
       {
-         float val = 2.0*(((float) sigArray[i] / 127.0) - 0.5);
+         latestVals[i] = sigArray[i];
+      }
+      
+   }
+   
+   void fillDrawBuffer()
+   {
+      buff->clear();
+      
+      float vals[NUM_PLOTS];
+      for (int i=0; i<NUM_PLOTS; i++)
+      {
+         float val = 1.9*(((float) latestVals[i] / 127.0) - 0.5);
          if (val > 1.0) val = 1.0;
          if (val < -1.0) val = -1.0;
-         DBG("val = " + String::formatted("%2.2f", val));
+         if (i==0)
+            DBG("val[0] = " + String::formatted("%2.2f", val));
          
-         //val = 0.0;
+         vals[i] = val;
          for (int j=0; j<kSAMPLES_PER_PIXEL; j++)
          {
-            
-            buff->addSample(i, j, val);
-            //this->pushSample(&val, i);
-            
+            if (j<=kSAMPLES_PER_PIXEL/2)
+               buff->addSample(i, j, vals[i]);
+            else
+               buff->addSample(i, j, vals[i]+0.05);
+            //addPlotVal(val);
          }
       }
-      this->pushBuffer(*buff);
+      pushBuffer(*buff);
+   }
+   
+   //test fn: adds a single plot point to all plots
+   void addPlotVal(float val)
+   {
+      AudioSampleBuffer* buff = new AudioSampleBuffer(NUM_PLOTS, 1);
+      buff->clear();
+      float* vals = new float[2];
+      buff->addSample(0, 0, val);
+      buff->addSample(1, 0, 0.5-val);
+      buff->addSample(2, 0, 1.5*val);
+      buff->addSample(3, 0, 1.5*(0.5-val));
+      buff->addSample(4, 0, val);
+      buff->addSample(5, 0, -val);
+      buff->addSample(6, 0, 0.5*val);
+      pushBuffer(*buff);
+      delete buff;
+
       
+      //vals[0] = val;
+      //vals[1] = 0.5 - val;
+      //pushSample(vals, 2);
+         }
+   
+   void timerCallback()
+   {
+
+      DBG("timerCallback");
+      fillDrawBuffer();
+      repaint();
+
+      
+//      float sign = 1.0;
+//      for (int i=0; i<100; i++)
+//      {
+//         val += sign*1.0/50;
+//         addPlotVal(val);
+//         if (val >= .5)
+//            sign = -1.0;
+//         if (val <= -0.5)
+//            sign = 1.0;
+//      }
+//      repaint();
+//      return;
+      
+      
+      
+      repaint();
    }
    
    ~SignalPlotterComponent()
@@ -81,6 +145,8 @@ private:
    double myTimeElapsed;
    std::vector<std::deque<int>> myPlotData;
    juce::Colour myPlotColours[kNUM_ICUBEX_SENSORS];
+   
+   float val;
    
 };
 

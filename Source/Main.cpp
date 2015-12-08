@@ -17,7 +17,7 @@
 class ICubeXMidiWindow : public DocumentWindow
 {
 public:
-    ICubeXMidiWindow() : DocumentWindow ("I-CubeX->libmapper App",
+    ICubeXMidiWindow() : DocumentWindow ("I-CubeX Signal Interface",
                                    Colours::lightgrey,
                                    DocumentWindow::allButtons,
                                          true)

@@ -79,6 +79,7 @@ private:
    ScopedPointer<MidiOutput> myMidiOut;
    ScopedPointer<AudioDeviceManager> myDeviceManager;
    ScopedPointer<SignalPlotterComponent> mySigPlotter;
+   String currentPortName;
     //[/UserVariables]
 
     //==============================================================================

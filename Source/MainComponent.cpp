@@ -140,6 +140,7 @@ MainWindow::MainWindow ()
    //init device manager
    myDeviceManager = new AudioDeviceManager();
    myDeviceManager->initialise(2, 2, 0, true, String::empty, 0);
+   currentPortName = "none";
    
    //init SigPlotter
    mySigPlotter = new SignalPlotterComponent();
@@ -161,7 +162,7 @@ MainWindow::MainWindow ()
    
    //[/UserPreSize]
    
-   setSize (600, 200);
+   setSize (600, 400);
    
    
    //[Constructor] You can add your own custom stuff here..
@@ -171,6 +172,13 @@ MainWindow::MainWindow ()
 MainWindow::~MainWindow()
 {
    //[Destructor_pre]. You can add your own custom destruction code here..
+   //stop digitizer
+   
+   for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+   {
+      SendStream(false, i);
+   }
+
    //[/Destructor_pre]
    
    comboBoxMidiIn = nullptr;
@@ -189,10 +197,6 @@ MainWindow::~MainWindow()
    
    
    //[Destructor]. You can add your own custom destruction code here..
-   
-   //stop digitizer
-   
-   SendReset();
    
    
    if (myMapperInterface != NULL)
@@ -337,6 +341,7 @@ void MainWindow::SelectMidiIn(int idx)
    if (! myDeviceManager->isMidiInputEnabled(newInput)) {
       myDeviceManager->setMidiInputEnabled(newInput, true);
       myDeviceManager->addMidiInputCallback(newInput, this);
+      currentPortName = newInput;
       
    }
    
