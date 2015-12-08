@@ -69,8 +69,8 @@ public:
          float val = 1.9*(((float) latestVals[i] / 127.0) - 0.5);
          if (val > 1.0) val = 1.0;
          if (val < -1.0) val = -1.0;
-         if (i==0)
-            DBG("val[0] = " + String::formatted("%2.2f", val));
+         //if (i==0)
+         //   DBG("val[0] = " + String::formatted("%2.2f", val));
          
          vals[i] = val;
          for (int j=0; j<kSAMPLES_PER_PIXEL; j++)

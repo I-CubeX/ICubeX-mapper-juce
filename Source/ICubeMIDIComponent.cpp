@@ -46,8 +46,10 @@ void ICubeMIDIComponent::sendSysExCmd()
    for (int i=0; i<sendBuff.size(); i++) {
       ptrData[i] = sendBuff.at(i);
    }
-   DBG("size of data =" + String((int)sendBuff.size()));
+//   DBG("size of data =" + String((int)sendBuff.size()));
    MidiMessage msg(ptrData, sendBuff.size()); //living dangerously
    if (outputPort != nullptr)
       outputPort->sendMessageNow(msg);
+   else
+      DBG("warning: no MIDI out attached to ICubeX Interface!");
 }

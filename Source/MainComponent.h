@@ -87,7 +87,6 @@ private:
    String currentPortName;
    int sensorValues[kNUM_ICUBEX_SENSORS];
    
-   
    //[/UserVariables]
    
    //==============================================================================

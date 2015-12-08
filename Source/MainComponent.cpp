@@ -179,8 +179,6 @@ MainWindow::~MainWindow()
    //stop digitizer
    
    myICubeX->setAllSensors(false);
-   
-   myDeviceManager->getDefaultMidiOutput()->clearAllPendingMessages();
 
    //[/Destructor_pre]
    
