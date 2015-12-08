@@ -38,7 +38,6 @@
  //[/Comments]
  */
 class MainWindow  : public Component,
-public MidiInputCallback,
 public ComboBoxListener,
 public ButtonListener,
 public ChangeListener
@@ -53,12 +52,6 @@ public:
    void RefreshPorts();
    void AddMidiIn(const String& name);
    void AddMidiOut(const String& name);
-   void handleIncomingMidiMessage (MidiInput* source,
-                                   const MidiMessage& message);
-   void handlePartialSysexMessage(MidiInput* source,
-                                  const uint8* messageData,
-                                  int numBytesSoFar,
-                                  double timestamp);
    
    void changeListenerCallback(ChangeBroadcaster* source) override;
    
@@ -73,8 +66,8 @@ public:
    
    void paint (Graphics& g) override;
    void resized() override;
-   void comboBoxChanged (ComboBox* comboBoxThatHasChanged);
-   void buttonClicked (Button* buttonThatWasClicked);
+   void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
+   void buttonClicked (Button* buttonThatWasClicked) override;
    
    
    

@@ -364,39 +364,6 @@ void MainWindow::SelectMidiOut(int idx)
    DBG("selected midi out " + newOutput);
 }
 
-
-//NOTE: we really should be processing this in the NON-UI thread!
-void MainWindow::handleIncomingMidiMessage (MidiInput* source, const MidiMessage& message)
-{
-//   if (message.isSysEx())
-//   {    //note: our parser expects a "full" sysex
-//      // message, so we need to put back 0xF0 header and 0xF7 footer bytes!
-//      std::vector<unsigned char> data;
-//      data.reserve(message.getSysExDataSize()+2);
-//      data.insert(data.begin(), 0xF0);
-//      for (int i=0; i<message.getSysExDataSize(); i++)
-//      {
-//         data.insert(data.end(), message.getSysExData()[i]);
-//         //DBG(String((unsigned int)(message.getSysExData()[i]))+ " ");
-//      }
-//      data.insert(data.end(), 0xF7);
-//      ParseSysEx(data);
-//   }
-//   
-//   //this is some needless array/vector data conversion right here
-//   std::vector<int> newVec;
-//   unsigned arraySize = kNUM_ICUBEX_SENSORS;
-//   newVec.insert(newVec.end(), &my_digitizer_state_.GetSensorValsArray()[0], &my_digitizer_state_.GetSensorValsArray()[arraySize]);
-//   myMapperInterface->updateVals(newVec);
-//   mySigPlotter->updateSigs(my_digitizer_state_.GetSensorValsArray());
-   
-   //we only have 8 fixed sensors...
-   //but still should probably auto generate GUI elements in the future and do away
-   //with this terrible hardcoding...
-   //DBG("\nmidi msg received: \n");
-   
-}
-
 void MainWindow::updateSensorVals()
 {
    for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
@@ -425,24 +392,6 @@ void MainWindow::updateLabels()
    }
 }
 
-void MainWindow::handlePartialSysexMessage(MidiInput* input, const uint8 *msg, int numBytesSoFar, double timestamp)
-{
-   //send it off to the I-CubeX parser here!!
-   DBG("sysex msg received\n");
-}
-
-//void MainWindow::sendSysExCmd()
-//{
-//   std::vector<unsigned char> sendBuff = getSysExBuffer();
-//   unsigned char* ptrData = new unsigned char[sendBuff.size()];
-//   for (int i=0; i<sendBuff.size(); i++) {
-//      ptrData[i] = sendBuff.at(i);
-//   }
-//   DBG("size of data =" + String((int)sendBuff.size()));
-//   MidiMessage msg(ptrData, sendBuff.size()); //living dangerously
-//   if (myDeviceManager->getDefaultMidiOutput() != nullptr)
-//      myDeviceManager->getDefaultMidiOutput()->sendMessageNow(msg);
-//}
 //[/MiscUserCode]
 
 
