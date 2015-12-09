@@ -299,7 +299,7 @@ void MainWindow::resized()
     labelSensor7->setBounds (136, 106, 64, 24);
     labelSensor8->setBounds (200, 106, 64, 24);
     //[UserResized] Add your own custom resize handling here..
-    mySigPlotter->setBounds(getWidth()/2, 5, getWidth()/2-5, getHeight()-15);
+    mySigPlotter->setBounds(300, 5, getWidth()-305, getHeight()-15);
     //mySigPlotter->setColours(juce::Colour::fromRGB(0, 0, 0), juce::Colour::fromRGB(0, 255, 0));
     //[/UserResized]
 }

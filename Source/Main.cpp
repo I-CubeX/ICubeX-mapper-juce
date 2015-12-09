@@ -27,6 +27,7 @@ public:
         centreWithSize(getWidth(), getHeight());
         setVisible(true);
         setResizable(true, true);
+        setResizeLimits(600, 200, INT_MAX, INT_MAX);
     }
     
     ~ICubeXMidiWindow()

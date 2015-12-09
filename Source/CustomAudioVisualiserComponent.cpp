@@ -36,17 +36,21 @@ struct CustomAudioVisualiserComponent::ChannelInfo
     void clear() noexcept
     {
         for (int i = 0; i < levels.size(); ++i)
+        {
             levels.getReference(i) = Range<float>();
-            
-            value = Range<float>();
-            subSample = 0;
-            }
+        }
+        
+        value = Range<float>();
+        subSample = 0;
+    }
     
     void pushSamples (const float* inputSamples, const int num) noexcept
     {
         for (int i = 0; i < num; ++i)
+        {
             pushSample (inputSamples[i]);
-            }
+        }
+    }
     
     void pushSample (const float newSample) noexcept
     {
@@ -142,8 +146,7 @@ void CustomAudioVisualiserComponent::pushBuffer (const AudioSourceChannelInfo& b
     const int numChannels = jmin (buffer.buffer->getNumChannels(), (int)channels.size());
     
     for (int i = 0; i < numChannels; ++i)
-        channels.getUnchecked(i)->pushSamples (buffer.buffer->getReadPointer (i, buffer.startSample),
-                                               buffer.numSamples);
+        channels.getUnchecked(i)->pushSamples (buffer.buffer->getReadPointer (i, buffer.startSample),buffer.numSamples);
 }
 
 void CustomAudioVisualiserComponent::pushSample (const float* d, int numChannels)
