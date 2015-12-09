@@ -118,6 +118,8 @@ public:
      */
     void getChannelAsPath (Path& result, const Range<float>* levels, int numLevels, int nextSample);
     
+    void setDrawGrid(bool draw) {drawGrid = draw;}
+    
     //==========================================================================
     /** @internal */
     void paint (Graphics&) override;
@@ -133,6 +135,10 @@ private:
     OwnedArray<Colour> waveformColours;
     
     void timerCallback() override;
+    
+    bool drawGrid;
+    
+    float drawOffset;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CustomAudioVisualiserComponent)
 };

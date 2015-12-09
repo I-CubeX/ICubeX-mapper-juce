@@ -19,6 +19,7 @@
 
 #define kNUM_PLOT_PTS 1024
 #define kSAMPLES_PER_PIXEL 4
+#define kOVER_DRAW 1
 
 #define NUM_PLOTS kNUM_ICUBEX_SENSORS
 
@@ -36,8 +37,12 @@ public:
         setBufferSize(kNUM_PLOT_PTS);
         setSamplesPerBlock(kSAMPLES_PER_PIXEL);
         setRepaintRate(60);
+        pixels_per_second = 60*kOVER_DRAW;
+
+        DBG(String(pixels_per_second));
         
-        buff = new AudioSampleBuffer(NUM_PLOTS, kSAMPLES_PER_PIXEL);
+        
+        buff = new AudioSampleBuffer(NUM_PLOTS, kSAMPLES_PER_PIXEL*kOVER_DRAW);
         
         for (int i=0; i< NUM_PLOTS; i++)
         {
@@ -77,9 +82,9 @@ public:
             //   DBG("val[0] = " + String::formatted("%2.2f", val));
             
             vals[i] = val;
-            for (int j=0; j<kSAMPLES_PER_PIXEL; j++)
+            for (int j=0; j<kSAMPLES_PER_PIXEL*kOVER_DRAW; j++)
             {
-                if (j<=kSAMPLES_PER_PIXEL/2)
+                if (j<=kSAMPLES_PER_PIXEL*kOVER_DRAW/2)
                     buff->addSample(i, j, vals[i]);
                 else
                     buff->addSample(i, j, vals[i]+0.05);
@@ -172,6 +177,8 @@ private:
     juce::Colour myPlotColours[kNUM_ICUBEX_SENSORS];
     juce::Colour myBgColour;
     float val;
+    
+    float pixels_per_second;
     
 };
 

@@ -88,12 +88,14 @@ struct CustomAudioVisualiserComponent::ChannelInfo
 //==============================================================================
 CustomAudioVisualiserComponent::CustomAudioVisualiserComponent (const int initialNumChannels) : numSamples (1024),
 inputSamplesPerBlock (256),
-backgroundColour (Colours::black),
-fgColour(Colours::red)
+    backgroundColour (Colours::black),
+    fgColour(Colours::red),
+    drawGrid(true)
 {
     setOpaque (true);
     setNumChannels (initialNumChannels);
     setRepaintRate (60);
+    drawOffset = 0.0;
 }
 
 CustomAudioVisualiserComponent::~CustomAudioVisualiserComponent()
@@ -192,6 +194,22 @@ void CustomAudioVisualiserComponent::paint (Graphics& g)
     g.fillAll (backgroundColour);
     
     Rectangle<float> r (getLocalBounds().toFloat());
+    
+    g.setColour(Colour(0x4000ffff));
+    
+    
+    for (int i=0; i<numSamples/60 + 1; i++)
+    {
+        drawOffset-= 1.0/60.0; //this is not a good way to keep track of time
+        
+        if (drawOffset < -(float)numSamples/60.0) {
+            drawOffset = 0.0;
+            DBG("blip");
+        }
+        float dx = r.getWidth()*(60.0/(float)numSamples);
+        g.drawLine(i*dx+drawOffset, 0, i*dx+drawOffset, r.getHeight());
+    }
+    
     const float channelHeight = r.getHeight() / channels.size();
     
     
