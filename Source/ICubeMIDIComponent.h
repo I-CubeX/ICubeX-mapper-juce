@@ -15,21 +15,21 @@
 #include "ICubeXInterface/ICubeXInteface.h"
 
 class ICubeMIDIComponent : public MidiInputCallback,
-                           public ICubeXInterface,
-                           public ChangeBroadcaster
+                            public ICubeXInterface,
+                            public ChangeBroadcaster
 {
 public:
-   void handleIncomingMidiMessage (MidiInput* source,
-                                   const MidiMessage& message);
-   void setAllSensors(bool stream_on);
-   
-   void setOutputPort(MidiOutput* port) {outputPort = port;}
-   
+    void handleIncomingMidiMessage (MidiInput* source,
+                                    const MidiMessage& message);
+    void setAllSensors(bool stream_on);
+    
+    void setOutputPort(MidiOutput* port) {outputPort = port;}
+    
 protected:
-   void sendSysExCmd() override;
-   
+    void sendSysExCmd() override;
+    
 private:
-   MidiOutput* outputPort;   
+    MidiOutput* outputPort;
 };
 
 
