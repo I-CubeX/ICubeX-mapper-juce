@@ -19,6 +19,12 @@
         <FILE id="O0nVeT" name="ICubeXSysExTranslator.h" compile="0" resource="0"
               file="Source/ICubeXInterface/ICubeXSysExTranslator.h"/>
       </GROUP>
+      <FILE id="Ql9sZN" name="ColourChangeButton.h" compile="0" resource="0"
+            file="Source/ColourChangeButton.h"/>
+      <FILE id="JTUohm" name="CustomAudioVisualiserComponent.cpp" compile="1"
+            resource="0" file="Source/CustomAudioVisualiserComponent.cpp"/>
+      <FILE id="Gov1Uz" name="CustomAudioVisualiserComponent.h" compile="0"
+            resource="0" file="Source/CustomAudioVisualiserComponent.h"/>
       <FILE id="phVhJX" name="ICubeMIDIComponent.cpp" compile="1" resource="0"
             file="Source/ICubeMIDIComponent.cpp"/>
       <FILE id="eQnM54" name="ICubeMIDIComponent.h" compile="0" resource="0"
