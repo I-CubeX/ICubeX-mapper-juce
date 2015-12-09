@@ -79,6 +79,7 @@ private:
    ScopedPointer<SignalPlotterComponent> mySigPlotter;
    String currentPortName;
    int sensorValues[kNUM_ICUBEX_SENSORS];
+   juce::Colour sigColours[kNUM_ICUBEX_SENSORS];
    
    //[/UserVariables]
    
@@ -95,9 +96,7 @@ private:
    ScopedPointer<Label> labelSensor5;
    ScopedPointer<Label> labelSensor6;
    ScopedPointer<Label> labelSensor7;
-   ScopedPointer<Label> labelSensor8;
-   
-   
+   ScopedPointer<Label> labelSensor8;   
    //==============================================================================
    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
 };

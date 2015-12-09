@@ -29,8 +29,7 @@ protected:
    void sendSysExCmd() override;
    
 private:
-   MidiOutput* outputPort;
-   
+   MidiOutput* outputPort;   
 };
 
 

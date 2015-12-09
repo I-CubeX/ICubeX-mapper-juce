@@ -30,6 +30,18 @@
 MainWindow::MainWindow ()
 {
    //[Constructor_pre] You can add your own custom stuff here..
+
+
+   sigColours[0] = Colours::blue;
+   sigColours[1] = Colours::green;
+   sigColours[2] = Colours::blueviolet;
+   sigColours[3] = Colours::cornflowerblue;
+   sigColours[4] = Colour(0xff2ab483);
+   sigColours[5] = Colours::brown;
+   sigColours[6] = Colour (0xffe81dd5);
+   sigColours[7] = Colours::black;
+   
+   
    //[/Constructor_pre]
    
    addAndMakeVisible (comboBoxMidiIn = new ComboBox ("midi in box"));
@@ -148,6 +160,11 @@ MainWindow::MainWindow ()
    
    //init SigPlotter
    mySigPlotter = new SignalPlotterComponent();
+   mySigPlotter->setColours(Colour(0xFFA0A0A0), Colours::green);
+   for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+   {
+      mySigPlotter->setChColour(sigColours[i], i);
+   }
    addAndMakeVisible(mySigPlotter);
    
    //start mapper interface
@@ -244,7 +261,7 @@ void MainWindow::resized()
    labelSensor8->setBounds (200, 92, 64, 24);
    //[UserResized] Add your own custom resize handling here..
    mySigPlotter->setBounds(getWidth()/2, 5, getWidth()/2-5, getHeight()-15);
-   mySigPlotter->setColours(juce::Colour::fromRGB(0, 0, 0), juce::Colour::fromRGB(0, 255, 0));
+   //mySigPlotter->setColours(juce::Colour::fromRGB(0, 0, 0), juce::Colour::fromRGB(0, 255, 0));
    //[/UserResized]
 }
 

@@ -14,6 +14,7 @@
 
 #include "ICubeXInterface/ICubeXInteface.h"
 #include "JuceHeader.h"
+#include "CustomAudioVisualiserComponent.h"
 #include <deque>
 
 #define kNUM_PLOT_PTS 1024
@@ -22,13 +23,13 @@
 #define NUM_PLOTS kNUM_ICUBEX_SENSORS
 
 
-class SignalPlotterComponent  : public AudioVisualiserComponent
+class SignalPlotterComponent  : public CustomAudioVisualiserComponent
 {
 public:
    
    AudioSampleBuffer* buff;
    
-   SignalPlotterComponent() : AudioVisualiserComponent(NUM_PLOTS)
+   SignalPlotterComponent() : CustomAudioVisualiserComponent(NUM_PLOTS)
    {
       val = 0.5;
       clear();
@@ -44,7 +45,10 @@ public:
       }
    }
    
-   
+   void SetBgColour(Colour col)
+   {
+      myBgColour = col;
+   }
    void SetPlotColour(int idx, Colour col)
    {
       myPlotColours[idx] = col;
@@ -133,6 +137,27 @@ public:
       repaint();
    }
    
+   void paint (Graphics& g) override
+   {
+      CustomAudioVisualiserComponent::paint(g);
+//      g.fillAll (myBgColour);
+//      
+//      Rectangle<float> r (getLocalBounds().toFloat());
+//      const float channelHeight = r.getHeight() / channels.size();
+//      
+//      
+//      for (int i = 0; i < channels.size(); ++i)
+//      {
+//         g.setColour (myPlotColours[i]);
+//
+//         const ChannelInfo& c = *channels.getUnchecked(i);
+//         
+//         paintChannel (g, r.removeFromTop (channelHeight),
+//                       c.levels.begin(), c.levels.size(), c.nextSample);
+//      }
+   }
+   
+   
    ~SignalPlotterComponent()
    {
       delete buff;
@@ -145,7 +170,7 @@ private:
    double myTimeElapsed;
    std::vector<std::deque<int>> myPlotData;
    juce::Colour myPlotColours[kNUM_ICUBEX_SENSORS];
-   
+   juce::Colour myBgColour;
    float val;
    
 };
