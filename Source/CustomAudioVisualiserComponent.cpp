@@ -31,6 +31,7 @@ struct CustomAudioVisualiserComponent::ChannelInfo
     {
         setBufferSize (bufferSize);
         clear();
+        isChSelected = false;
     }
     
     void clear() noexcept
@@ -75,11 +76,16 @@ struct CustomAudioVisualiserComponent::ChannelInfo
         if (nextSample >= newSize)
             nextSample = 0;
     }
+    //TODO: see if it makes sense to use the Selectable class in JUCE
+    void setChSelected(bool selected) { isChSelected = selected;}
+    bool getIsChSelected() const {return isChSelected;}
     
     CustomAudioVisualiserComponent& owner;
     Array<Range<float> > levels;
     Range<float> value;
     int nextSample, subSample;
+    
+    bool isChSelected;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChannelInfo)
 };
@@ -174,9 +180,10 @@ void CustomAudioVisualiserComponent::timerCallback()
     repaint();
 }
 
-void CustomAudioVisualiserComponent::setColours (Colour bk, Colour fg) noexcept
+void CustomAudioVisualiserComponent::setColours (Colour bk, Colour fg, Colour grd) noexcept
 {
     backgroundColour = bk;
+    gridColour = grd;
     for (int i=0; i<channels.size(); i++)
     {
         *waveformColours.getUnchecked(i) = fg;
@@ -195,12 +202,12 @@ void CustomAudioVisualiserComponent::paint (Graphics& g)
     
     Rectangle<float> r (getLocalBounds().toFloat());
     
-    g.setColour(Colour(0x4000ffff));
+    g.setColour(gridColour);
     
     
     for (int i=0; i<numSamples/60 + 1; i++)
     {
-        drawOffset-= 1.0/60.0; //this is not a good way to keep track of time
+        //drawOffset-= 1.0/60.0; //this is not a good way to keep track of time
         
         if (drawOffset < -(float)numSamples/60.0) {
             drawOffset = 0.0;  //wrap the moving grid point around
@@ -217,11 +224,27 @@ void CustomAudioVisualiserComponent::paint (Graphics& g)
     
     for (int i = 0; i < channels.size(); ++i)
     {
-        g.setColour (*waveformColours.getUnchecked(i));
+
+        
         const ChannelInfo& c = *channels.getUnchecked(i);
+
+        //draw horizontal grid for channel
+        g.setColour(gridColour);
+        g.drawLine(0, channelHeight*(i+1), r.getWidth(), channelHeight*(i+1));
+        
+        
+        //draw a channel
+        g.setColour (*waveformColours.getUnchecked(i));
         
         paintChannel (g, r.removeFromTop (channelHeight),
                       c.levels.begin(), c.levels.size(), c.nextSample);
+        
+        //draw "selection" around channel if selected
+        if (c.getIsChSelected())
+        {
+            g.setColour(Colour(0xAA00FF00));
+            g.drawRect(0.0, (float)i*channelHeight, r.getWidth(), channelHeight, channelHeight/25.0);
+        }
     }
 }
 
@@ -254,4 +277,37 @@ void CustomAudioVisualiserComponent::paintChannel (Graphics& g, Rectangle<float>
     g.fillPath (p, AffineTransform::fromTargetPoints (0.0f, -1.0f,               area.getX(), area.getY(),
                                                       0.0f, 1.0f,                area.getX(), area.getBottom(),
                                                       (float) numLevels, -1.0f,  area.getRight(), area.getY()));
+}
+
+void CustomAudioVisualiserComponent::mouseDown(const juce::MouseEvent &event)
+{
+    String s;
+    s << "mouseDown @ " << String((int)event.getMouseDownPosition().getX())
+      <<" "  << String((int)event.getMouseDownPosition().getY())<<"\n";
+    DBG(s);
+    
+    // calculate where we've clicked in relation to channels
+    // TODO: don't do this in the overlapped plotting case.
+    Rectangle<float> r (getLocalBounds().toFloat());
+    const float channelHeight = r.getHeight() / channels.size();
+    
+    s.clear();
+    for (int i = 0; i < channels.size(); ++i)
+    {
+        if ( (event.getMouseDownY() < channelHeight*(i+1)) &&
+               (event.getMouseDownY() > channelHeight*i) )
+        {
+            //we can do something else for right click
+            if (event.mods.isLeftButtonDown()) {
+                bool selected = !channels[i]->getIsChSelected(); //do a toggle
+                channels[i]->setChSelected(selected);
+                s <<"ch " << String(i) << " selected = " << String(selected)<<"\n";
+                DBG(s);
+                
+                break; //we can only click on one thing at a time
+            }
+        }
+    }
+    
+    
 }

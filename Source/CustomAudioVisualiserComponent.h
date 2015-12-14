@@ -40,6 +40,17 @@
  for fancy additional features that you'd like it to support! If you're building a
  real-world app that requires more powerful waveform display, you'll probably want to
  create your own component instead.
+ 
+ 
+ Modified to include more interesting plotting functions, such as:
+ 
+    - setting individual channel colours
+    - ability to do a single "stacked" multi-channel plot instead of a single one
+    - [todo] be able to select channels, to create interfaces that allow you to
+            trigger channel-specific actions
+    - select + highlight channels, and send this information to parent classes so that
+        processing/combining of signals can be performed
+ 
  */
 
 class CustomAudioVisualiserComponent  : public Component, private Timer
@@ -96,7 +107,7 @@ public:
     void pushSample (const float* samplesForEachChannel, int numChannels);
     
     /** Sets the colours used to paint the */
-    void setColours (Colour backgroundColour, Colour waveformColour) noexcept;
+    void setColours (Colour backgroundColour, Colour waveformColour, Colour gridColour = Colour(0x4000ffff)) noexcept;
     
     /** Sets colour of a channel */
     
@@ -120,6 +131,9 @@ public:
     
     void setDrawGrid(bool draw) {drawGrid = draw;}
     
+    void mouseDown(const MouseEvent& event) override;
+
+    
     //==========================================================================
     /** @internal */
     void paint (Graphics&) override;
@@ -131,7 +145,7 @@ private:
     
     OwnedArray<ChannelInfo> channels;
     int numSamples, inputSamplesPerBlock;
-    Colour backgroundColour, fgColour;
+    Colour backgroundColour, fgColour, gridColour;
     OwnedArray<Colour> waveformColours;
     
     void timerCallback() override;
