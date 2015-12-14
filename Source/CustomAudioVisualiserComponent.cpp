@@ -203,8 +203,9 @@ void CustomAudioVisualiserComponent::paint (Graphics& g)
         drawOffset-= 1.0/60.0; //this is not a good way to keep track of time
         
         if (drawOffset < -(float)numSamples/60.0) {
-            drawOffset = 0.0;
+            drawOffset = 0.0;  //wrap the moving grid point around
             DBG("blip");
+            DBG(String(r.getWidth()));
         }
         float dx = r.getWidth()*(60.0/(float)numSamples);
         g.drawLine(i*dx+drawOffset, 0, i*dx+drawOffset, r.getHeight());

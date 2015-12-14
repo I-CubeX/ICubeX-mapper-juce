@@ -430,6 +430,7 @@ void MainWindow::SelectMidiOut(int idx)
     
     myDeviceManager->setDefaultMidiOutput(newOutput);
     myICubeX->setOutputPort(myDeviceManager->getDefaultMidiOutput());
+    myICubeX->SendSetMode(false);
     myICubeX->SendReset();
     
     DBG("selected midi out " + newOutput);
