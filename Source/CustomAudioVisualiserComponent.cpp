@@ -242,7 +242,7 @@ void CustomAudioVisualiserComponent::paint (Graphics& g)
         //draw "selection" around channel if selected
         if (c.getIsChSelected())
         {
-            g.setColour(Colour(0xAA00FF00));
+            g.setColour(Colour(0x7700FF00));
             g.drawRect(0.0, (float)i*channelHeight, r.getWidth(), channelHeight, channelHeight/25.0);
         }
     }
@@ -303,11 +303,31 @@ void CustomAudioVisualiserComponent::mouseDown(const juce::MouseEvent &event)
                 channels[i]->setChSelected(selected);
                 s <<"ch " << String(i) << " selected = " << String(selected)<<"\n";
                 DBG(s);
+                sendChangeMessage();
                 
                 break; //we can only click on one thing at a time
             }
         }
     }
-    
+}
+
+void CustomAudioVisualiserComponent::setSelectAllChannels(bool sel)
+{
+    for (int i=0; i<channels.size(); i++)
+    {
+        channels[i]->setChSelected(sel);
+    }
+    sendChangeMessage();
+}
+
+int CustomAudioVisualiserComponent::getNumSelectedChs() const
+{
+    int selected = 0;
+    for (int i=0; i<channels.size(); i++)
+    {
+        if (channels[i]->getIsChSelected())
+            selected++;
+    }
+    return selected;
     
 }

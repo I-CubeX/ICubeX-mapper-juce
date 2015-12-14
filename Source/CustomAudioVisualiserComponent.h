@@ -53,7 +53,7 @@
  
  */
 
-class CustomAudioVisualiserComponent  : public Component, private Timer
+class CustomAudioVisualiserComponent  : public Component, public ChangeBroadcaster, private Timer
 {
     
 public:
@@ -132,6 +132,10 @@ public:
     void setDrawGrid(bool draw) {drawGrid = draw;}
     
     void mouseDown(const MouseEvent& event) override;
+    
+    void setSelectAllChannels(bool sel);
+    
+    int getNumSelectedChs() const;
 
     
     //==========================================================================

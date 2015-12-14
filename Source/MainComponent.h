@@ -1,21 +1,21 @@
 /*
- ==============================================================================
- 
- This is an automatically generated GUI class created by the Introjucer!
- 
- Be careful when adding custom code to these files, as only the code within
- the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
- and re-saved.
- 
- Created with Introjucer version: 4.0.2
- 
- ------------------------------------------------------------------------------
- 
- The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
- Copyright (c) 2015 - ROLI Ltd.
- 
- ==============================================================================
- */
+  ==============================================================================
+
+  This is an automatically generated GUI class created by the Introjucer!
+
+  Be careful when adding custom code to these files, as only the code within
+  the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
+  and re-saved.
+
+  Created with Introjucer version: 4.0.2
+
+  ------------------------------------------------------------------------------
+
+  The Introjucer is part of the JUCE library - "Jules' Utility Class Extensions"
+  Copyright (c) 2015 - ROLI Ltd.
+
+  ==============================================================================
+*/
 
 #ifndef __JUCE_HEADER_8B807C0970EF2CF1__
 #define __JUCE_HEADER_8B807C0970EF2CF1__
@@ -32,46 +32,46 @@
 
 //==============================================================================
 /**
- //[Comments]
+                                                                    //[Comments]
  An auto-generated component, created by the Introjucer.
- 
+
  Describe your class and how it works here!
- //[/Comments]
- */
+                                                                    //[/Comments]
+*/
 class MainWindow  : public Component,
-public ChangeListener,
-public ComboBoxListener,
-public ButtonListener
+                    public ChangeListener,
+                    public ComboBoxListener,
+                    public ButtonListener
 {
 public:
     //==============================================================================
     MainWindow ();
     ~MainWindow();
-    
+
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
     void RefreshPorts();
     void AddMidiIn(const String& name);
     void AddMidiOut(const String& name);
-    
+
     void changeListenerCallback(ChangeBroadcaster* source) ;
-    
+
     static AudioDeviceManager& getSharedAudioDeviceManager();
     void SelectMidiIn(int idx);
     void SelectMidiOut(int idx);
-    
+
     void updateLabels();
     void updateSensorVals();
-    
+
     //[/UserMethods]
-    
+
     void paint (Graphics& g);
     void resized();
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged);
     void buttonClicked (Button* buttonThatWasClicked);
-    
-    
-    
+
+
+
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     ScopedPointer<MapperInterface> myMapperInterface;
@@ -83,9 +83,9 @@ private:
     juce::Colour sigColours[kNUM_ICUBEX_SENSORS];
     Label* sigLabels[kNUM_ICUBEX_SENSORS];
     ScopedPointer<ColourChangeButton> mySensorBtns[kNUM_ICUBEX_SENSORS];
-    
+
     //[/UserVariables]
-    
+
     //==============================================================================
     ScopedPointer<ComboBox> comboBoxMidiIn;
     ScopedPointer<ComboBox> comboBoxMidiOut;
@@ -100,8 +100,11 @@ private:
     ScopedPointer<Label> labelSensor6;
     ScopedPointer<Label> labelSensor7;
     ScopedPointer<Label> labelSensor8;
-    
-    
+    ScopedPointer<TextButton> textButtonSelAll;
+    ScopedPointer<Label> labelSensorProps;
+    ScopedPointer<TextButton> textButtonSelNone;
+
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
 };
