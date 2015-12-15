@@ -1,12 +1,24 @@
 # ICubeX-mapper-juce
 
-An interface application between I-CubeX (www.icubex.com) Sensors and libmapper
+A JUCE-based sensor interfacing framework with libmapper bindings.
 
-Made with the JUCE framework
+It started off as an interface application between I-CubeX (www.icubex.com) Sensors and libmapper, but has since been extended as a general sensor visualization.
 
-#Requirements:
+Currently it is a sandbox project as part of experimentation with the JUCE framework and to aid in the architectural design of the system. Major refactoring will be expected.
 
-(OSX)
+Some Goals:
+
+- interface with other microcontrollers
+- apply signal visualization, analysis, and processing components
+- use the above components to perform higher level feature extraction
+- more usable interface for connecting with mapping tools, and/or built in mapping tools
+
+
+Current development configuration:
+
+Software:
+- Mac OSX
+- Juce 4.0.x (required modules are included with code base)
 
 Hardware:
 - I-CubeX USB microDig (or Wi-Microdig)

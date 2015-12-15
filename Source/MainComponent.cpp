@@ -232,7 +232,7 @@ MainWindow::MainWindow ()
     mySumPlotterWind->setVisible(true);
 
     mySigSumPlotter = new SignalPlotterComponent(1);
-    mySigSumPlotter->setColours(Colours::black, Colours::cyan);
+    mySigSumPlotter->setColours(Colour(0xF0202020), Colours::cyan, Colours::green);
     //TODO: for some reason, don't set the auto resize
     // feature otherwise initalizes with assertion fault
     mySumPlotterWind->setContentOwned(mySigSumPlotter, false);
