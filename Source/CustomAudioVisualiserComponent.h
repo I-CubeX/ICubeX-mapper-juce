@@ -135,8 +135,9 @@ public:
     
     void setSelectAllChannels(bool sel);
     
-    int getNumSelectedChs() const;
-
+    int getNumSelectedChs() const; //TODO: not in this class?
+    
+    bool isChannelSelected(int ch);
     
     //==========================================================================
     /** @internal */

@@ -30,13 +30,13 @@ public:
     
     AudioSampleBuffer* buff;
     
-    SignalPlotterComponent() : CustomAudioVisualiserComponent(NUM_PLOTS)
+    SignalPlotterComponent(int plots = NUM_PLOTS) : CustomAudioVisualiserComponent(plots)
     {
         val = 0.5;
         clear();
         setBufferSize(kNUM_PLOT_PTS);
         setSamplesPerBlock(kSAMPLES_PER_PIXEL);
-        setRepaintRate(60);
+        setRepaintRate(60); //TODO: sync related stuff 
         pixels_per_second = 60*kOVER_DRAW;
 
         DBG(String(pixels_per_second));
@@ -87,7 +87,7 @@ public:
                 if (j<=kSAMPLES_PER_PIXEL*kOVER_DRAW/2)
                     buff->addSample(i, j, vals[i]);
                 else
-                    buff->addSample(i, j, vals[i]+0.05);
+                    buff->addSample(i, j, vals[i]+0.05); //Note2self: not a good way to get "line thickness"...
                 //addPlotVal(val);
             }
         }

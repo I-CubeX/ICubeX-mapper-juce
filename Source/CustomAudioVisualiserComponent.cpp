@@ -242,7 +242,8 @@ void CustomAudioVisualiserComponent::paint (Graphics& g)
         //draw "selection" around channel if selected
         if (c.getIsChSelected())
         {
-            g.setColour(Colour(0x7700FF00));
+            //g.setColour(Colour(0x7700FF00));
+            g.setColour(Colour(0xFFFF0000));
             g.drawRect(0.0, (float)i*channelHeight, r.getWidth(), channelHeight, channelHeight/25.0);
         }
     }
@@ -300,7 +301,7 @@ void CustomAudioVisualiserComponent::mouseDown(const juce::MouseEvent &event)
             //we can do something else for right click
             if (event.mods.isLeftButtonDown()) {
                 bool selected = !channels[i]->getIsChSelected(); //do a toggle
-                channels[i]->setChSelected(selected);
+                channels.getUnchecked(i)->setChSelected(selected);
                 s <<"ch " << String(i) << " selected = " << String(selected)<<"\n";
                 DBG(s);
                 sendChangeMessage();
@@ -315,7 +316,7 @@ void CustomAudioVisualiserComponent::setSelectAllChannels(bool sel)
 {
     for (int i=0; i<channels.size(); i++)
     {
-        channels[i]->setChSelected(sel);
+        channels.getUnchecked(i)->setChSelected(sel);
     }
     sendChangeMessage();
 }
@@ -325,9 +326,13 @@ int CustomAudioVisualiserComponent::getNumSelectedChs() const
     int selected = 0;
     for (int i=0; i<channels.size(); i++)
     {
-        if (channels[i]->getIsChSelected())
+        if (channels.getUnchecked(i)->getIsChSelected())
             selected++;
     }
     return selected;
-    
+}
+
+bool CustomAudioVisualiserComponent::isChannelSelected(int ch)
+{
+    return channels.getUnchecked(ch)->getIsChSelected();
 }

@@ -41,6 +41,11 @@ MainWindow::MainWindow ()
     sigColours[6] = Colour (0xffe81dd5);
     sigColours[7] = Colour (0xffeeeeee);
 
+    for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+    {
+        sensorValues[i] = 0;
+    }
+
 
     //[/Constructor_pre]
 
@@ -167,6 +172,11 @@ MainWindow::MainWindow ()
     textButtonSelNone->setConnectedEdges (Button::ConnectedOnLeft);
     textButtonSelNone->addListener (this);
 
+    addAndMakeVisible (textButtonPop = new TextButton ("button popout"));
+    textButtonPop->setButtonText (TRANS("Plot"));
+    textButtonPop->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnRight);
+    textButtonPop->addListener (this);
+
 
     //[UserPreSize]
 
@@ -206,6 +216,27 @@ MainWindow::MainWindow ()
     }
     mySigPlotter->addChangeListener(this);
     addAndMakeVisible(mySigPlotter);
+    
+    //init popup plotter
+    
+    bool native = true;
+    mySumPlotterWind = new PopoutPlottingWindow("Signal Average", Colour(0xFAAAAAAAAA), DocumentWindow::allButtons);
+    
+    Rectangle<int> area (0, 0, 400, 200);
+    const RectanglePlacement placement ((native ? RectanglePlacement::xLeft : RectanglePlacement::xRight)
+                                        + RectanglePlacement::yTop + RectanglePlacement::doNotResize);
+    Rectangle<int> result (placement.appliedTo (area, Desktop::getInstance().getDisplays().getMainDisplay().userArea.reduced (20)));
+    mySumPlotterWind->setBounds (result);
+    mySumPlotterWind->setResizable (true, ! native);
+    mySumPlotterWind->setUsingNativeTitleBar (native);
+    mySumPlotterWind->setVisible(true);
+
+    mySigSumPlotter = new SignalPlotterComponent(1);
+    mySigSumPlotter->setColours(Colours::black, Colours::cyan);
+    //TODO: for some reason, don't set the auto resize
+    // feature otherwise initalizes with assertion fault
+    mySumPlotterWind->setContentOwned(mySigSumPlotter, false);
+    mySumPlotterWind->setVisible(false);
 
     //start mapper interface
     myMapperInterface = new MapperInterface();
@@ -276,6 +307,7 @@ MainWindow::~MainWindow()
     textButtonSelAll = nullptr;
     labelSensorProps = nullptr;
     textButtonSelNone = nullptr;
+    textButtonPop = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -323,9 +355,10 @@ void MainWindow::resized()
     labelSensor6->setBounds (72, 106, 64, 24);
     labelSensor7->setBounds (136, 106, 64, 24);
     labelSensor8->setBounds (200, 106, 64, 24);
-    textButtonSelAll->setBounds (40, 160, 95, 24);
+    textButtonSelAll->setBounds (8, 160, 95, 24);
     labelSensorProps->setBounds (16, 184, 248, 184);
-    textButtonSelNone->setBounds (136, 160, 95, 24);
+    textButtonSelNone->setBounds (184, 160, 95, 24);
+    textButtonPop->setBounds (104, 160, 79, 24);
     //[UserResized] Add your own custom resize handling here..
     mySigPlotter->setBounds(300, 5, getWidth()-305, getHeight()-15);
     //mySigPlotter->setColours(juce::Colour::fromRGB(0, 0, 0), juce::Colour::fromRGB(0, 255, 0));
@@ -394,6 +427,12 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
         mySigPlotter->setSelectAllChannels(false);
         //[/UserButtonCode_textButtonSelNone]
     }
+    else if (buttonThatWasClicked == textButtonPop)
+    {
+        //[UserButtonCode_textButtonPop] -- add your button handler code here..
+        popSumPlotter();
+        //[/UserButtonCode_textButtonPop]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -411,9 +450,8 @@ void MainWindow::changeListenerCallback(juce::ChangeBroadcaster *source)
         updateLabels();
     }
     else if (source == mySigPlotter) {
-        String s;
-        s << "num selected = " << String(mySigPlotter->getNumSelectedChs());
-        labelSensorProps->setText(s, NotificationType::dontSendNotification);
+        updateAnalysisWindow();
+
     }
 
     else
@@ -493,6 +531,8 @@ void MainWindow::updateSensorVals()
     myMapperInterface->updateVals(newVec);
     mySigPlotter->updateSigs(sensorValues);
 
+    updateAnalysisWindow();
+
 }
 
 void MainWindow::updateLabels()
@@ -515,6 +555,52 @@ void MainWindow::updateLabels()
          labelSensor8->setText(String(sensorValues[7]), dontSendNotification);
          */
     }
+}
+
+void MainWindow::updateAnalysisWindow()
+{
+    String s;
+
+    //TODO: this kind of behaviour should be modularized
+    int numSelected = 0;
+    float sum = 0;
+
+    s << "ch selected = ";
+    for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+    {
+        if (mySigPlotter->isChannelSelected(i))
+        {
+            numSelected++;
+            //TODO: see, we have yet another copy
+            // of the sensor Values, but when was this synced?
+            //   ... we shouldn't need to care if we had a dedicated
+            //       model of the sensor values that handles it!!!
+            sum+= sensorValues[i];
+            s <<String(i) << " ";
+        }
+        
+        //and here we do some combination, which further shows the
+        // necessity of a modular system...
+        if ( (mySumPlotterWind->isVisible()) && (numSelected>=1) ) //don't divide by 0
+        {
+            //TODO another interesting consequence:
+            // this plotter "window" class should probably
+            // be decoupled from the plotting data
+            // to be consistent with MVC...
+            int val = sum/numSelected; //rounding, blah blah
+            mySigSumPlotter->updateSigs(&val);
+        }
+    }
+
+    s <<"\nSum = " << String(sum);
+
+
+    labelSensorProps->setText(s, NotificationType::dontSendNotification);
+}
+
+void MainWindow::popSumPlotter()
+{
+    mySumPlotterWind->setVisible (!mySumPlotterWind->isVisible());
 }
 
 //[/MiscUserCode]
@@ -595,7 +681,7 @@ BEGIN_JUCER_METADATA
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="select all btn" id="c34bcd55767c897b" memberName="textButtonSelAll"
-              virtualName="" explicitFocusOrder="0" pos="40 160 95 24" tooltip="select all channels"
+              virtualName="" explicitFocusOrder="0" pos="8 160 95 24" tooltip="select all channels"
               buttonText="Select All" connectedEdges="2" needsCallback="1"
               radioGroupId="0"/>
   <LABEL name="new label" id="99641d49f60a64e3" memberName="labelSensorProps"
@@ -604,9 +690,12 @@ BEGIN_JUCER_METADATA
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="14" bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="select none  btn" id="a6becec1dde3e99d" memberName="textButtonSelNone"
-              virtualName="" explicitFocusOrder="0" pos="136 160 95 24" tooltip="select no channels"
+              virtualName="" explicitFocusOrder="0" pos="184 160 95 24" tooltip="select no channels"
               buttonText="Select None" connectedEdges="1" needsCallback="1"
               radioGroupId="0"/>
+  <TEXTBUTTON name="button popout" id="1b705cb3ad30856f" memberName="textButtonPop"
+              virtualName="" explicitFocusOrder="0" pos="104 160 79 24" buttonText="Plot"
+              connectedEdges="3" needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

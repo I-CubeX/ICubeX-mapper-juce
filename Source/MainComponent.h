@@ -26,6 +26,7 @@
 #include "ICubeMIDIComponent.h"
 #include "ICubeXInterface/ICubeXInteface.h"
 #include "ColourChangeButton.h"
+#include "PopoutPlottingWindow.h"
 //[/Headers]
 
 
@@ -63,6 +64,10 @@ public:
     void updateLabels();
     void updateSensorVals();
 
+    void updateAnalysisWindow();
+    
+    void popSumPlotter();
+
     //[/UserMethods]
 
     void paint (Graphics& g);
@@ -78,6 +83,13 @@ private:
     ScopedPointer<AudioDeviceManager> myDeviceManager;
     ScopedPointer<ICubeMIDIComponent> myICubeX;
     ScopedPointer<SignalPlotterComponent> mySigPlotter;
+    //Note2Self: the sig plotter gets passed to the plotting
+    // window, which means that if it was a ScopedPointer,
+    // we would actually lose it here.
+    // reconsider the hierachy of this when doing the arch design
+    // of signal classes
+    SafePointer<SignalPlotterComponent> mySigSumPlotter;
+    ScopedPointer<PopoutPlottingWindow> mySumPlotterWind;
     String currentPortName;
     int sensorValues[kNUM_ICUBEX_SENSORS];
     juce::Colour sigColours[kNUM_ICUBEX_SENSORS];
@@ -103,7 +115,7 @@ private:
     ScopedPointer<TextButton> textButtonSelAll;
     ScopedPointer<Label> labelSensorProps;
     ScopedPointer<TextButton> textButtonSelNone;
-
+    ScopedPointer<TextButton> textButtonPop;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
