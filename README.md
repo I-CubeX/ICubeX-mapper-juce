@@ -14,6 +14,10 @@ Some Goals:
 - more usable interface for connecting with mapping tools, and/or built in mapping tools
 
 
+Dec 2015
+
+---
+
 Current development configuration:
 
 Software:
@@ -30,7 +34,7 @@ Software:
 - libmapper (https://github.com/malloch/libmapper)
 - ICubeX Connect (http://infusionsystems.com/connectmac)
 
-Developed as part of the requirements of MUMT609, McGill University
+Originally developed as part of the requirements of MUMT609, McGill University
 Johnty Wang (johntywang@gmail.com)
 Input Devices and Music Interactions Lab, McGill University
 Apr 2015
