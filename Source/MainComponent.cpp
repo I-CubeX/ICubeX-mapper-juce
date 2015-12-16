@@ -202,10 +202,23 @@ MainWindow::MainWindow ()
     myDeviceManager = new AudioDeviceManager();
     myDeviceManager->initialise(2, 2, 0, true, String::empty, 0);
     currentPortName = "none";
+    
+    //create a sensor container object for holding data
 
+    SensorContainer* container = new SensorContainer(kNUM_ICUBEX_SENSORS);
+    for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+    {
+        container->update(-1.0, i);
+    }
+    mySensorContainers.add(container);
+    container->addChangeListener(this);
+    
     //init ICubeX Component
     myICubeX = new ICubeMIDIComponent();
-    myICubeX->addChangeListener(this);
+    myICubeX->setContainer(mySensorContainers.getUnchecked(0));
+    
+    
+//    myICubeX->addChangeListener(this);
 
     //init SigPlotter
     mySigPlotter = new SignalPlotterComponent();
@@ -214,6 +227,8 @@ MainWindow::MainWindow ()
     {
         mySigPlotter->setChColour(sigColours[i], i);
     }
+    
+    //this is for UI update mechanism
     mySigPlotter->addChangeListener(this);
     addAndMakeVisible(mySigPlotter);
     
@@ -442,8 +457,8 @@ void MainWindow::buttonClicked (Button* buttonThatWasClicked)
 
 void MainWindow::changeListenerCallback(juce::ChangeBroadcaster *source)
 {
-    if (source == myICubeX)
-    {
+    if (source == mySensorContainers[0])
+    {   //polled update example: we grab data from the container
         updateSensorVals();
         updateLabels();
     }
@@ -522,11 +537,13 @@ void MainWindow::updateSensorVals()
 {
     for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
     {
-        sensorValues[i] = myICubeX->my_digitizer_state_.GetSensorValState(i);
+        sensorValues[i] = (int) mySensorContainers[0]->getSensorData()[i];
     }
     //this is some needless array/vector data conversion right here
     std::vector<int> newVec(sensorValues, sensorValues+kNUM_ICUBEX_SENSORS);
+    
     myMapperInterface->updateVals(newVec);
+    
     mySigPlotter->updateSigs(sensorValues);
 
     updateAnalysisWindow();

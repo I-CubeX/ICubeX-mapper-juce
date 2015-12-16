@@ -15,6 +15,7 @@
 #include "ICubeXInterface/ICubeXInteface.h"
 #include "JuceHeader.h"
 #include "CustomAudioVisualiserComponent.h"
+#include "SensorContainerInterface.h"
 #include <deque>
 
 #define kNUM_PLOT_PTS 1024
@@ -24,7 +25,7 @@
 #define NUM_PLOTS kNUM_ICUBEX_SENSORS
 
 
-class SignalPlotterComponent  : public CustomAudioVisualiserComponent
+class SignalPlotterComponent  : public CustomAudioVisualiserComponent, public SensorContainerInterface
 {
 public:
     
@@ -67,6 +68,8 @@ public:
         }
         
     }
+    
+    void triggerChanged();
     
     void fillDrawBuffer()
     {

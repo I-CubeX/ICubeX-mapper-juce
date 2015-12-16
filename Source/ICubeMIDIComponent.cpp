@@ -34,8 +34,17 @@ void ICubeMIDIComponent::handleIncomingMidiMessage(juce::MidiInput *source, cons
         }
         data.insert(data.end(), 0xF7);
         ParseSysEx(data);
-        sendChangeMessage();
         
+        
+        //update the attached sensor container, and then
+        // and emit change message to listeners attached to
+        // this container.
+        float vals[kNUM_ICUBEX_SENSORS];
+        for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+        {
+            vals[i] = my_digitizer_state_.GetSensorValState(i);
+        }
+        getSensorContainer()->update(vals, 8);
     }
 }
 

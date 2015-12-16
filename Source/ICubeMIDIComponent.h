@@ -13,10 +13,11 @@
 
 #include "JuceHeader.h"
 #include "ICubeXInterface/ICubeXInteface.h"
+#include "SensorContainerInterface.h"
 
 class ICubeMIDIComponent : public MidiInputCallback,
                             public ICubeXInterface,
-                            public ChangeBroadcaster
+                            public SensorContainerInterface
 {
 public:
     void handleIncomingMidiMessage (MidiInput* source,
@@ -25,10 +26,14 @@ public:
     
     void setOutputPort(MidiOutput* port) {outputPort = port;}
     
+    //void triggerChanged()override {sendChangeMessage();}
+    
 protected:
     void sendSysExCmd() override;
     
 private:
+    
+    
     MidiOutput* outputPort;
 };
 

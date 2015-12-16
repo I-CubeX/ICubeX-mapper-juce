@@ -39,6 +39,14 @@
             file="Source/MapperInterface.h"/>
       <FILE id="bK5etz" name="PopoutPlottingWindow.h" compile="0" resource="0"
             file="Source/PopoutPlottingWindow.h"/>
+      <FILE id="jla4rr" name="SensorContainer.cpp" compile="1" resource="0"
+            file="Source/SensorContainer.cpp"/>
+      <FILE id="WJh1FL" name="SensorContainer.h" compile="0" resource="0"
+            file="Source/SensorContainer.h"/>
+      <FILE id="aKgTzo" name="SensorContainerInterface.cpp" compile="1" resource="0"
+            file="Source/SensorContainerInterface.cpp"/>
+      <FILE id="tJ6mHs" name="SensorContainerInterface.h" compile="0" resource="0"
+            file="Source/SensorContainerInterface.h"/>
       <FILE id="oyNew6" name="SignalPlotterComponent.h" compile="1" resource="0"
             file="Source/SignalPlotterComponent.h"/>
     </GROUP>

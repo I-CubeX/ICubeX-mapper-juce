@@ -27,6 +27,7 @@
 #include "ICubeXInterface/ICubeXInteface.h"
 #include "ColourChangeButton.h"
 #include "PopoutPlottingWindow.h"
+#include "SensorContainer.h"
 //[/Headers]
 
 
@@ -95,6 +96,8 @@ private:
     juce::Colour sigColours[kNUM_ICUBEX_SENSORS];
     Label* sigLabels[kNUM_ICUBEX_SENSORS];
     ScopedPointer<ColourChangeButton> mySensorBtns[kNUM_ICUBEX_SENSORS];
+    
+    OwnedArray<SensorContainer> mySensorContainers;
 
     //[/UserVariables]
 
