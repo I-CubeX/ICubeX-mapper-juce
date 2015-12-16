@@ -22,6 +22,7 @@ public:
                                          DocumentWindow::allButtons,
                                          true)
     {
+        this->setUsingNativeTitleBar(true);
         myMainComponent = new MainWindow();
         setContentOwned(myMainComponent, true);
         centreWithSize(getWidth(), getHeight());

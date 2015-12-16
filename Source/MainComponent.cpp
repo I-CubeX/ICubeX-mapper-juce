@@ -229,14 +229,12 @@ MainWindow::MainWindow ()
     mySumPlotterWind->setBounds (result);
     mySumPlotterWind->setResizable (true, ! native);
     mySumPlotterWind->setUsingNativeTitleBar (native);
-    mySumPlotterWind->setVisible(true);
 
     mySigSumPlotter = new SignalPlotterComponent(1);
     mySigSumPlotter->setColours(Colour(0xF0202020), Colours::cyan, Colours::green);
     //TODO: for some reason, don't set the auto resize
     // feature otherwise initalizes with assertion fault
     mySumPlotterWind->setContentOwned(mySigSumPlotter, false);
-    mySumPlotterWind->setVisible(false);
 
     //start mapper interface
     myMapperInterface = new MapperInterface();
@@ -601,6 +599,7 @@ void MainWindow::updateAnalysisWindow()
 void MainWindow::popSumPlotter()
 {
     mySumPlotterWind->setVisible (!mySumPlotterWind->isVisible());
+    mySumPlotterWind->setAlwaysOnTop(true);
 }
 
 //[/MiscUserCode]
