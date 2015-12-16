@@ -89,8 +89,15 @@ private:
     // we would actually lose it here.
     // reconsider the hierachy of this when doing the arch design
     // of signal classes
+    
+    //these two might be factorable into two classes?
     SafePointer<SignalPlotterComponent> mySigSumPlotter;
     ScopedPointer<PopoutPlottingWindow> mySumPlotterWind;
+    
+    //testing out the new synchronized sensor data container
+    SafePointer<SignalPlotterComponent> mySyncedSigPlotter;
+    ScopedPointer<PopoutPlottingWindow> mySyncedPlotterWind;
+    
     String currentPortName;
     int sensorValues[kNUM_ICUBEX_SENSORS];
     juce::Colour sigColours[kNUM_ICUBEX_SENSORS];

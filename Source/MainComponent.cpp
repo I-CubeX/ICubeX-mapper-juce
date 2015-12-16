@@ -235,7 +235,7 @@ MainWindow::MainWindow ()
     //init popup plotter
     
     bool native = true;
-    mySumPlotterWind = new PopoutPlottingWindow("Signal Average", Colour(0xFAAAAAAAAA), DocumentWindow::allButtons);
+    mySumPlotterWind = new PopoutPlottingWindow("Signal Average", Colour(0xFAAAAAAA), DocumentWindow::allButtons);
     
     Rectangle<int> area (0, 0, 400, 200);
     const RectanglePlacement placement ((native ? RectanglePlacement::xLeft : RectanglePlacement::xRight)
@@ -250,17 +250,28 @@ MainWindow::MainWindow ()
     //TODO: for some reason, don't set the auto resize
     // feature otherwise initalizes with assertion fault
     mySumPlotterWind->setContentOwned(mySigSumPlotter, false);
+    
+    
+    //here we demonstrate a synchronized plotting component
+    mySyncedSigPlotter = new SignalPlotterComponent(1, true);
+    //conenct it to the default
+    mySyncedSigPlotter->setContainer(mySensorContainers[0]);
+    //with the following line, the plot updates only when data is updated
+    mySensorContainers[0]->addChangeListener(mySyncedSigPlotter);
+    mySyncedSigPlotter->setColours(Colour(0xF0202020), Colours::orange, Colours::green);
+
+    mySyncedPlotterWind = new PopoutPlottingWindow("Synced Plotter", Colour(0xFAAABBAA), DocumentWindow::closeButton);
+    result.setPosition(result.getX()+500, result.getY());
+    mySyncedPlotterWind->setBounds (result);
+    mySyncedPlotterWind->setContentNonOwned(mySyncedSigPlotter, false);
+    mySyncedPlotterWind->setVisible(true);
+    mySyncedSigPlotter->repaint();
 
     //start mapper interface
     myMapperInterface = new MapperInterface();
     DBG("starting mapper thread...\n");
     myMapperInterface->startThread();
     DBG("... started!\n");
-
-    //colour for plots
-    //NamedValueSet props = labelSensor1->getProperties();
-    //Colour* col = (Colour*)props.getVarPointerAt(Label::textColourId);
-    //mySigPlotter->SetPlotColour(0, *col);
 
     //other init stuff here
     RefreshPorts();
@@ -334,6 +345,12 @@ MainWindow::~MainWindow()
         //delete myMapperInterface;
     }
     myDeviceManager = nullptr;
+    
+    if (mySigSumPlotter != nullptr)
+        delete mySigSumPlotter;
+
+    if (mySyncedSigPlotter != nullptr)
+        delete mySyncedSigPlotter;
     //[/Destructor]
 }
 
@@ -617,6 +634,8 @@ void MainWindow::popSumPlotter()
 {
     mySumPlotterWind->setVisible (!mySumPlotterWind->isVisible());
     mySumPlotterWind->setAlwaysOnTop(true);
+    
+    mySyncedPlotterWind->setVisible(!mySyncedPlotterWind->isVisible());
 }
 
 //[/MiscUserCode]

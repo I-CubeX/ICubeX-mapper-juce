@@ -25,14 +25,16 @@
 #define NUM_PLOTS kNUM_ICUBEX_SENSORS
 
 
-class SignalPlotterComponent  : public CustomAudioVisualiserComponent, public SensorContainerInterface
+class SignalPlotterComponent  : public CustomAudioVisualiserComponent, public SensorContainerInterface, public ChangeListener
 {
 public:
     
     AudioSampleBuffer* buff;
     
-    SignalPlotterComponent(int plots = NUM_PLOTS) : CustomAudioVisualiserComponent(plots)
+    SignalPlotterComponent(int plots = NUM_PLOTS, bool sync = false) : CustomAudioVisualiserComponent(plots)
     {
+        numPlots = plots;
+        isSynced = sync;
         val = 0.5;
         clear();
         setBufferSize(kNUM_PLOT_PTS);
@@ -43,9 +45,9 @@ public:
         DBG(String(pixels_per_second));
         
         
-        buff = new AudioSampleBuffer(NUM_PLOTS, kSAMPLES_PER_PIXEL*kOVER_DRAW);
+        buff = new AudioSampleBuffer(numPlots, kSAMPLES_PER_PIXEL*kOVER_DRAW);
         
-        for (int i=0; i< NUM_PLOTS; i++)
+        for (int i=0; i< numPlots; i++)
         {
             latestVals[i] = 0.0;
         }
@@ -62,21 +64,36 @@ public:
     
     void updateSigs(int* sigArray)
     {
-        for (int i=0; i<NUM_PLOTS; i++)
+        for (int i=0; i<numPlots; i++)
         {
             latestVals[i] = sigArray[i];
         }
         
     }
     
+    //this is a synchronized draw update!
+    void changeListenerCallback(ChangeBroadcaster* source)
+    {
+        SensorContainer* container = getSensorContainer();
+        if ( container != nullptr)
+        {
+            for (int i=0; i<container->getSize(); i++)
+            {
+                latestVals[i] = container->getSensorData()[i];
+            }
+        }
+        fillDrawBuffer();
+        repaint();
+    }
+
     void triggerChanged();
     
     void fillDrawBuffer()
     {
         buff->clear();
         
-        float vals[NUM_PLOTS];
-        for (int i=0; i<NUM_PLOTS; i++)
+        float vals[numPlots];
+        for (int i=0; i<numPlots; i++)
         {
             float val = 1.9*(((float) latestVals[i] / 127.0) - 0.5);
             if (val > 1.0) val = 1.0;
@@ -100,7 +117,7 @@ public:
     //test fn: adds a single plot point to all plots
     void addPlotVal(float val)
     {
-        AudioSampleBuffer* buff = new AudioSampleBuffer(NUM_PLOTS, 1);
+        AudioSampleBuffer* buff = new AudioSampleBuffer(numPlots, 1);
         buff->clear();
         float* vals = new float[2];
         buff->addSample(0, 0, val);
@@ -121,9 +138,10 @@ public:
     
     void timerCallback()
     {
-        
-        //DBG("timerCallback");
-        fillDrawBuffer();
+        //if not synced by data, we want to manually fill
+        // the draw buffer
+        if (!isSynced)
+            fillDrawBuffer();
         repaint();
         
         
@@ -173,6 +191,11 @@ public:
     
 private:
     
+    int numPlots;
+    bool isSynced;
+    
+    //TODO these arrays should have dynamic length
+    // depending on init.
     int latestVals[kNUM_ICUBEX_SENSORS];
     
     double myTimeElapsed;
