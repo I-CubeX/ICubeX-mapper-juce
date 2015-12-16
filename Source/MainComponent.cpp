@@ -253,7 +253,7 @@ MainWindow::MainWindow ()
     
     
     //here we demonstrate a synchronized plotting component
-    mySyncedSigPlotter = new SignalPlotterComponent(1, true);
+    mySyncedSigPlotter = new SignalPlotterComponent(2, true);
     //conenct it to the default
     mySyncedSigPlotter->setContainer(mySensorContainers[0]);
     //with the following line, the plot updates only when data is updated

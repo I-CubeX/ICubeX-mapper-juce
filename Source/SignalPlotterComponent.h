@@ -139,48 +139,17 @@ public:
     void timerCallback()
     {
         //if not synced by data, we want to manually fill
-        // the draw buffer
+        // the draw buffer and repaint on timer
         if (!isSynced)
+        {
             fillDrawBuffer();
-        repaint();
-        
-        
-        //      float sign = 1.0;
-        //      for (int i=0; i<100; i++)
-        //      {
-        //         val += sign*1.0/50;
-        //         addPlotVal(val);
-        //         if (val >= .5)
-        //            sign = -1.0;
-        //         if (val <= -0.5)
-        //            sign = 1.0;
-        //      }
-        //      repaint();
-        //      return;
-        
-        
-        
-        repaint();
-    }
+            repaint();
+        }
+}
     
     void paint (Graphics& g) override
     {
         CustomAudioVisualiserComponent::paint(g);
-        //      g.fillAll (myBgColour);
-        //
-        //      Rectangle<float> r (getLocalBounds().toFloat());
-        //      const float channelHeight = r.getHeight() / channels.size();
-        //
-        //
-        //      for (int i = 0; i < channels.size(); ++i)
-        //      {
-        //         g.setColour (myPlotColours[i]);
-        //
-        //         const ChannelInfo& c = *channels.getUnchecked(i);
-        //
-        //         paintChannel (g, r.removeFromTop (channelHeight),
-        //                       c.levels.begin(), c.levels.size(), c.nextSample);
-        //      }
     }
     
     
