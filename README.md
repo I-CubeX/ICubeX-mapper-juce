@@ -18,7 +18,9 @@ Current development configuration:
 
 Software:
 - Mac OSX
-- Juce 4.0.x (required modules are included with code base)
+- Juce 4.0.x 
+
+NOTE: this project should be checked out into the same level as JUCE_ROOT/examples folder. This way, the modules do not have to be explicitly checked in.
 
 Hardware:
 - I-CubeX USB microDig (or Wi-Microdig)
