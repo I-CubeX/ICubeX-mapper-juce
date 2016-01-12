@@ -54,6 +54,20 @@ void MapperInterface::run()
         if (myMapperOut != NULL)
         {
             myMapperOut->poll();
+            
+            //mapper 0.3 convergent5 branch:
+            for (auto const &sig : myMapperOut->signals(MAPPER_DIR_OUTGOING))
+            {
+                int sensorVal = mySigVals.at(idx);
+                //DBG("signame = " + sig.name());
+                //a bit convoluted, but we need Device::signals() to return non-const
+                // for update to work. TODO: chat to Joe about this.
+                myMapperOut->signal(sig.name()).update(sensorVal);
+                
+            }
+            
+            //mapper 0.3 master:
+            /*
             for (mapper::Signal::Iterator it = myMapperOut->outputs().begin(); it != myMapperOut->outputs().end(); ++it) {
                 //DBG("updating " + (*it).full_name());
                 //there is only one in this case...]
@@ -62,7 +76,7 @@ void MapperInterface::run()
                 threadLock.exit();
                 (*it).update(sensorVal);
                 //(*it).update(0.0f);
-            }
+            }*/
             idx++;
             sleep(50); //lets not be too hasty here...
             
