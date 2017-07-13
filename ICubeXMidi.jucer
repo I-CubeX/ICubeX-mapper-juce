@@ -2,7 +2,8 @@
 
 <JUCERPROJECT id="s1h3wl" name="ICubeXMidi" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.NewProject" includeBinaryInAppConfig="1"
-              jucerVersion="4.0.2">
+              jucerVersion="5.0.2" displaySplashScreen="1" reportAppUsage="1"
+              splashScreenColour="Dark">
   <MAINGROUP id="K1gbOS" name="ICubeXMidi">
     <GROUP id="{C7D46B97-0931-1E09-720E-F0748E955B92}" name="Source">
       <GROUP id="{557C2C96-D36A-1742-AF37-29A13F1E5E72}" name="ICubeXInterface">
@@ -44,27 +45,27 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="mapper-0">
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="mapper">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="default"
-                       isDebug="1" optimisation="1" targetName="ICubeXMapper" headerPath="/usr/local/include/mapper-0/&#10;/usr/local/include/"
+                       isDebug="1" optimisation="1" targetName="ICubeXMapper" headerPath="/usr/local/include/mapper/&#10;/usr/local/include/"
                        libraryPath="/usr/local/lib/"/>
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="default"
-                       isDebug="0" optimisation="2" targetName="ICubeXMapper" headerPath="/usr/local/include/mapper-0/&#10;/usr/local/include/"
+                       isDebug="0" optimisation="2" targetName="ICubeXMapper" headerPath="/usr/local/include/mapper/&#10;/usr/local/include/"
                        libraryPath="/usr/local/lib/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../../modules"/>
-        <MODULEPATH id="juce_events" path="../../modules"/>
-        <MODULEPATH id="juce_graphics" path="../../modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE/modules/juce_core"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules/juce_events"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules/juce_graphics"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules/juce_data_structures"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules/juce_gui_basics"/>
+        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules/juce_audio_basics"/>
+        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules/juce_audio_devices"/>
+        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules/juce_audio_formats"/>
+        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules/juce_audio_utils"/>
+        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules/juce_audio_processors"/>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules/juce_gui_extra"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>

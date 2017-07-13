@@ -9,7 +9,7 @@
  */
 
 #include "MapperInterface.h"
-#include "ICubeXInteface.h"
+#include "ICubeXInterface/ICubeXInteface.h"
 
 MapperInterface::MapperInterface() : Thread("MapperInterfaceThread")
 {
@@ -24,7 +24,7 @@ MapperInterface::MapperInterface() : Thread("MapperInterfaceThread")
     for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
     {
         String signame = "/sensor" + String(i);
-        myMapperOut->add_output(signame.toStdString(), 1, 'i', "raw", &min, &max);
+        myMapperOut->add_output_signal(signame.toStdString(), 1, 'i', "raw", &min, &max);
         mySigVals.push_back(0);
     }
     //myMapperOut->add_input("/testLoopback", 1, 'f', "Hz", &min, &max, inputHandler, 0);
@@ -54,16 +54,15 @@ void MapperInterface::run()
         if (myMapperOut != NULL)
         {
             myMapperOut->poll();
-            for (mapper::Signal::Iterator it = myMapperOut->outputs().begin(); it != myMapperOut->outputs().end(); ++it) {
-                //DBG("updating " + (*it).full_name());
-                //there is only one in this case...]
-                threadLock.enter();
+            for (int i=0; i<kNUM_ICUBEX_SENSORS; i++)
+            {
+                String signame = "/sensor" + String(i);
                 int sensorVal = mySigVals.at(idx);
-                threadLock.exit();
-                (*it).update(sensorVal);
-                //(*it).update(0.0f);
+                
+                //note: we assume this signal exists, which may not be the case!
+                myMapperOut->signal(signame.toStdString()).update(sensorVal);
             }
-            idx++;
+            
             sleep(50); //lets not be too hasty here...
             
         }
